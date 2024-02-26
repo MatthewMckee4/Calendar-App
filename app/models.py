@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    date_of_birth = models.DateField(null=True)
-    profile_picture_url = models.CharField(max_length=128)
+    date_of_birth = models.DateField(null=True, blank=True)
+    profile_picture_url = models.CharField(max_length=12, null=True, blank=True)
 
     def __str__(self):
         return self.user.username

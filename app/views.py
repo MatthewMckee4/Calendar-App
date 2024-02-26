@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from app.forms import UserRegistrationForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib.auth import authenticate, login, logout
 from app.forms import LoginForm
 from app.forms import UserRegistrationForm, LoginForm, UserProfileForm
 
@@ -17,15 +18,23 @@ def register(request):
         user_form = UserRegistrationForm(request.POST)
         profile_form = UserProfileForm(request.POST)
         if user_form.is_valid() and profile_form.is_valid():
-            # Create a new user object but avoid saving it yet
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data["password"])
             new_user.save()
+
             # Create the UserProfile instance
             profile = profile_form.save(commit=False)
             profile.user = new_user
             profile.save()
-            return redirect("login")
+
+            # Log in the user
+            login(request, profile)
+
+            return redirect("app:index")
+        else:
+            print("User registration failed")
+            print(user_form.errors)
+            print(profile_form.errors)
     else:
         user_form = UserRegistrationForm()
         profile_form = UserProfileForm()
@@ -45,8 +54,8 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 if user.is_active:
-                    auth_login(request, user)
-                    return redirect("home")
+                    login(request, user)
+                    return redirect(reverse("app:index"))
     else:
         form = LoginForm()
     return render(request, f"{APP_TEMPLATE_DIR}login.html", {"form": form})
@@ -61,3 +70,8 @@ def profile(request):
 def logout_user(request):
     logout(request)
     return render(request, f"{APP_TEMPLATE_DIR}index.html")
+
+
+@login_required
+def calendars(request):
+    return render(request, f"{APP_TEMPLATE_DIR}calendars.html")

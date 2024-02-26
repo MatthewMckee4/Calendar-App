@@ -25,9 +25,14 @@ class UserRegistrationForm(forms.ModelForm):
 
 
 class UserProfileForm(forms.ModelForm):
+    date_of_birth = forms.DateField(
+        label="Date of Birth", widget=forms.DateInput(attrs={"type": "date"})
+    )
+    profile_picture = forms.ImageField(label="Profile Picture", required=False)
+
     class Meta:
         model = UserProfile
-        fields = ["date_of_birth", "profile_picture_url"]
+        fields = ["date_of_birth", "profile_picture"]
 
 
 class LoginForm(forms.Form):
