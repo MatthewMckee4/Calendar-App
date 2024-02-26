@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from app.models import UserProfile
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -21,6 +22,12 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords don't match")
 
         return confirm_password
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ["date_of_birth", "profile_picture_url"]
 
 
 class LoginForm(forms.Form):

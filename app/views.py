@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from app.forms import UserRegistrationForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login as auth_login, logout
 from app.forms import LoginForm
+from app.forms import UserRegistrationForm, LoginForm, UserProfileForm
 
 APP_TEMPLATE_DIR = "app/"
 
@@ -13,18 +14,29 @@ def index(request):
 
 def register(request):
     if request.method == "POST":
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data["password"])
-            user.save()
+        user_form = UserRegistrationForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            # Create a new user object but avoid saving it yet
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data["password"])
+            new_user.save()
+            # Create the UserProfile instance
+            profile = profile_form.save(commit=False)
+            profile.user = new_user
+            profile.save()
             return redirect("login")
     else:
-        form = UserRegistrationForm()
-    return render(request, f"{APP_TEMPLATE_DIR}/register.html", {"form": form})
+        user_form = UserRegistrationForm()
+        profile_form = UserProfileForm()
+    return render(
+        request,
+        f"{APP_TEMPLATE_DIR}register.html",
+        {"user_form": user_form, "profile_form": profile_form},
+    )
 
 
-def login(request):
+def user_login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -32,14 +44,12 @@ def login(request):
             password = form.cleaned_data["password"]
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                login(request, user)
-                # Redirect to a success page.
-                return redirect(
-                    "home"
-                )  # Change 'home' to the name of your home page URL
+                if user.is_active:
+                    auth_login(request, user)
+                    return redirect("home")
     else:
         form = LoginForm()
-    return render(request, "login.html", {"form": form})
+    return render(request, f"{APP_TEMPLATE_DIR}login.html", {"form": form})
 
 
 @login_required
