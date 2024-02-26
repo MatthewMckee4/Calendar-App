@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+<head>
+    <title>
+        Rango - {% block title %}How to Tango with Django!{% endblock %}
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="bg-gray-800 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex">
+                <a class="text-white text-xl font-bold" href={% url 'app:index' %}>Home</a>
+                {% if user.is_authenticated %}
+                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:calendars' %}>My Calendars</a>
+                {% endif %}
+            </div>
+            <div class="flex">
+                {% if user.is_authenticated %}
+                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:profile' %}>Profile</a>
+                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:logout_user' %}>Logout</a>
+                {% else %}
+                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:login' %}>Login</a>
+                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:register' %}>Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>
