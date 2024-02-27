@@ -1,3 +1,4 @@
+from __future__ import annotations
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -9,28 +10,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-class Calendar(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    events = models.ManyToManyField("Event", related_name="calendars")
-    name = models.CharField(max_length=64)
-    description = models.CharField(max_length=512)
-    colour = models.CharField(max_length=64)
-
-
-class Reminder(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    event = models.ForeignKey("Event", on_delete=models.CASCADE)
-    reminder_date_time = models.DateTimeField()
-    message = models.CharField(max_length=256)
-
-
-class Tag(models.Model):
-    events = models.ManyToManyField("Event", related_name="tags")
-    name = models.CharField(max_length=64)
-    description = models.CharField(max_length=512)
-    colour = models.CharField(max_length=64)
 
 
 class Event(models.Model):
@@ -45,6 +24,28 @@ class Event(models.Model):
     location_longitude = models.FloatField(null=True, blank=True)
     recurring = models.BooleanField(default=False)
     recurring_frequency = models.CharField(max_length=64, blank=True)
+
+
+class Calendar(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    events = models.ManyToManyField(Event, related_name="calendars")
+    name = models.CharField(max_length=64)
+    description = models.CharField(max_length=512)
+    colour = models.CharField(max_length=64)
+
+
+class Reminder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    reminder_date_time = models.DateTimeField()
+    message = models.CharField(max_length=256)
+
+
+class Tag(models.Model):
+    events = models.ManyToManyField(Event, related_name="tags")
+    name = models.CharField(max_length=64)
+    description = models.CharField(max_length=512)
+    colour = models.CharField(max_length=64)
 
 
 class Invitation(models.Model):
