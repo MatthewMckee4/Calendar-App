@@ -28,7 +28,7 @@ def register(request):
             profile.save()
 
             # Log in the user
-            login(request, profile)
+            login(request, new_user)
 
             return redirect("app:index")
         else:
