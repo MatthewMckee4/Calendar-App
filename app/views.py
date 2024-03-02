@@ -5,12 +5,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from app.forms import LoginForm
 from app.forms import UserRegistrationForm, LoginForm, UserProfileForm
+from datetime import date
 
 APP_TEMPLATE_DIR = "app/"
 
 
 def index(request):
-    return render(request, f"{APP_TEMPLATE_DIR}index.html")
+    context_dict = {'date': date.today()}
+    return render(request, f"{APP_TEMPLATE_DIR}index.html", context=context_dict)
 
 
 def register(request):

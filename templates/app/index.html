@@ -3,9 +3,49 @@
 {% block title %}
     Index Page
 {% endblock %}
-
 {% block content %}
 <div class="container mx-auto mt-5">
-    <h1 class="text-3xl font-bold">Welcome to your Calendar App</h1>
+    {% if user.is_authenticated %}
+        <h1 class="text-3xl font-bold">Welcome to your Calendar App</h1>
+        <p class ="text-2xl ml-4">{{ date }}</p>
+        <p class ="text-xl ml-4">This Week</p>
+        <!-- Table not completed, after implementation of calendars can we add context to the table -->
+        <table class="fixed">
+            <thead>
+                <col width="150px" />
+                <col width="150px" />
+                <col width="150px" />
+                <col width="150px" />
+                <col width="150px" />
+                <col width="150px" />
+                <col width="150px" />
+                <tr>
+                    <th class="border border-slate-300">Monday</th>
+                    <th class="border border-slate-300">Tuesday</th>
+                    <th class="border border-slate-300">Wednesday</th>
+                    <th class="border border-slate-300">Thursday</th>
+                    <th class="border border-slate-300">Friday</th>
+                    <th class="border border-slate-300">Saturday</th>
+                    <th class="border border-slate-300">Sunday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <!-- Temporary fill-in -->
+                    <td>Event</td>
+                    <td>Event</td>
+                    <td>Event</td>
+                </tr>
+                <tr>
+                    <td>Event</td>
+                </tr>
+            </tbody>
+        </table>
+    <!-- If not logged-in, we can add more if wanted -->
+    {% else %}
+        <p class="text-black-300 ml-4">You are not logged in. If you are new here, click <a class="hover:text-indigo-700" href={% url 'app:register' %}>here to register </a>! </p>
+        <p class="text-black-300 ml-4">If you have an account, click <a class="hover:text-indigo-700" href={% url 'app:login' %}>here to login </a>! </p>
+    {% endif %}
+        
 </div>
 {% endblock %}
