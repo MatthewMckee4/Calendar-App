@@ -11,7 +11,19 @@ APP_TEMPLATE_DIR = "app/"
 
 
 def index(request):
-    context_dict = {'date': date.today()}
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return redirect(reverse("app:index"))
+    else:
+        form = LoginForm()
+    context_dict = {'date': date.today(), 'form': form}
     return render(request, f"{APP_TEMPLATE_DIR}index.html", context=context_dict)
 
 
@@ -71,7 +83,7 @@ def profile(request):
 @login_required
 def logout_user(request):
     logout(request)
-    return render(request, f"{APP_TEMPLATE_DIR}index.html")
+    return redirect(reverse("app:index"))
 
 
 @login_required
