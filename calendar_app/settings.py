@@ -26,7 +26,9 @@ MEDIA_DIR = os.path.join(BASE_DIR, "media")
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# PLEASE DO NOT SHARE THE GOOGLE API KEY OUTSIDE OF THE GROUP, thanks :) - aidan
 SECRET_KEY = "!tn+g(fb6pkbxn!6zob3$sdf99_wq^@5wlus!8j#c+fow50fvj"
+GOOGLE_API_KEY = 'AIzaSyAshwqmiRx87_xxtZNhpPKjFY2JxBb70o4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
