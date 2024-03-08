@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from app.forms import LoginForm
 from app.forms import UserRegistrationForm, LoginForm, UserProfileForm
 from datetime import date
+from app.models import UserProfile
 
 APP_TEMPLATE_DIR = "app/"
 
@@ -77,7 +78,17 @@ def user_login(request):
 
 @login_required
 def profile(request):
-    return render(request, f"{APP_TEMPLATE_DIR}profile.html")
+    context_dict = {}
+
+    full_name_list = request.user.get_full_name().split(" ")
+    context_dict["fname"] = full_name_list[0]
+    context_dict["lname"] = full_name_list[1]
+
+    userProfile = UserProfile.objects.get(user = request.user)
+    if userProfile:
+        context_dict["DoB"] = userProfile.date_of_birth
+        context_dict["profilePhoto"] = userProfile.profile_picture_url
+    return render(request, f"{APP_TEMPLATE_DIR}profile.html", context=context_dict)
 
 
 @login_required

@@ -5,10 +5,26 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto mt-5">
-    <h2>Profile</h2>
-    <p>Welcome, {{ user.username }}</p>
+<div class="divide-x-2 divide-y-2 divide-backgroundGrey">
+<span class="container mx-auto mt-5 background-color: #D9D9D9">
+    <h2>Display Profile</h2>
+    <img src="{{ profilePhoto }}"></span>
+    <p>Username: {{ user.username }}</p>
+</span>
+</div>
+
+<div>
+<span class="container mx-auto mt-5">
+    <h2>Your Details</h2>
+    <p>First Name: {{ fname }}</p>
+    <p>Surname: {{ lname }}</p>
     <p>Email: {{ user.email }}</p>
-    <!-- You can display additional user information here -->
+    <p>Date of Birth: {{ DoB }}</p>
+    
+</span>
+
+<span>
+
+</span>
 </div>
 {% endblock %}
