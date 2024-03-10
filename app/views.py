@@ -7,6 +7,7 @@ from app.forms import LoginForm
 from app.forms import UserRegistrationForm, LoginForm, UserProfileForm
 from datetime import date
 from app.models import UserProfile
+from app.models import Calendar
 
 APP_TEMPLATE_DIR = "app/"
 
@@ -24,7 +25,12 @@ def index(request):
                     return redirect(reverse("app:index"))
     else:
         form = LoginForm()
-    context_dict = {'date': date.today(), 'form': form}
+    flag = False
+    if request.user.is_authenticated:
+        calendar_exist = Calendar.objects.filter(user=request.user).exists()
+        if calendar_exist:
+            flag = True
+    context_dict = {'date': date.today(), 'form': form, 'flag': flag, 'user': request.user}
     return render(request, f"{APP_TEMPLATE_DIR}index.html", context=context_dict)
 
 

@@ -4,46 +4,99 @@
     Index Page
 {% endblock %}
 {% block content %}
-<div class="container mx-auto mt-5">
+<div class="container mx-auto mt-5 flex">
     {% if user.is_authenticated %}
-        <h1 class="text-3xl font-bold">Welcome to your Calendar App</h1>
-        <p class ="text-2xl ml-4">{{ date }}</p>
-        <p class ="text-xl ml-4">This Week</p>
-        <!-- Table not completed, after implementation of calendars can we add context to the table -->
-        <table class="fixed">
-            <thead>
-                <col width="150px" />
-                <col width="150px" />
-                <col width="150px" />
-                <col width="150px" />
-                <col width="150px" />
-                <col width="150px" />
-                <col width="150px" />
-                <tr>
-                    <th class="border border-slate-300">Monday</th>
-                    <th class="border border-slate-300">Tuesday</th>
-                    <th class="border border-slate-300">Wednesday</th>
-                    <th class="border border-slate-300">Thursday</th>
-                    <th class="border border-slate-300">Friday</th>
-                    <th class="border border-slate-300">Saturday</th>
-                    <th class="border border-slate-300">Sunday</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <!-- Temporary fill-in -->
-                    <td>Event</td>
-                    <td>Event</td>
-                    <td>Event</td>
-                </tr>
-                <tr>
-                    <td>Event</td>
-                </tr>
-            </tbody>
-        </table>
+        {% if flag %}
+            <div class="flex">
+                <div class="mr-10">
+                    <h1 class="text-3xl font-bold">Welcome to your Calendar App</h1>
+                    <p class ="text-2xl ml-4">{{ date }}</p>
+                    <p class ="text-xl ml-4">This Week</p>
+                    <!-- Table not completed, after implementation of calendars can we add context to the table -->
+                    <table class="fixed relative mb-5">
+                        <thead>
+                            <col width="150px" />
+                            <col width="150px" />
+                            <col width="150px" />
+                            <col width="150px" />
+                            <col width="150px" />
+                            <col width="150px" />
+                            <col width="150px" />
+                            <tr>
+                                <th class="border border-slate-300">Monday</th>
+                                <th class="border border-slate-300">Tuesday</th>
+                                <th class="border border-slate-300">Wednesday</th>
+                                <th class="border border-slate-300">Thursday</th>
+                                <th class="border border-slate-300">Friday</th>
+                                <th class="border border-slate-300">Saturday</th>
+                                <th class="border border-slate-300">Sunday</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Temporary fill-in -->
+                                <td>Example Event</td>
+                                <td>Example Event</td>
+                                <td>Example Event</td>
+                            </tr>
+                            <tr>
+                                <td>Example Event</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="bg-gray-200 p-4 rounded shadow-md" style="max-width: 1100px;">
+                        <h2 class="text-2xl font-semibold mb-2">Display Calendars</h2>
+                    
+                        <div class="flex items-center mb-2">
+                            <input type="checkbox" id="calendar1" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
+                            <label for="calendar1" class="text-gray-700">Calendar 1</label>
+                        </div>
+                    
+                        <div class="flex items-center mb-2">
+                            <input type="checkbox" id="calendar2" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
+                            <label for="calendar2" class="text-gray-700">Calendar 2</label>
+                        </div>
+                    
+                        <div class="flex items-center">
+                            <input type="checkbox" id="calendar3" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
+                            <label for="calendar3" class="text-gray-700">Calendar 3</label>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
+                        <h2 class="text-2xl font-semibold mb-2">My Notifications</h2>
+                        <p>Reminders and invitation for events</p>
+                    </div>
+                    <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
+                        <h2 class="text-2xl font-semibold mb-2">My Events</h2>
+                        <p>Create and search for your events</p>
+                    </div>
+                    <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
+                        <h2 class="text-2xl font-semibold mb-2">Next Event</h2>
+                        <p>Your next event is in XX minutes</p>
+                        <div class="bg-gray-300 p-4 rounded shadow-md max-w-md mb-2">
+                            <p>Event Title</p>
+                            <p>Location</p>
+                            <p>Start Time, Date</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        {% else %}
+            <!-- Logged in, but has not created a calendar -->
+            <div class="text-center">
+                <a href={% url 'app:calendars' %}>
+                <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-5 px-10 border border-gray-400 rounded shadow text-2xl mr-4">
+                    Create A Calendar!
+                </button>
+                </a>
+            </div>
+        {% endif %}
     <!-- If not logged-in, we can add more if wanted -->
     {% else %}
-        <div class="container mx-auto mt-5">
+        <div class="container mx-auto mt-5 ">
             <h2 class="text-2xl font-bold mb-4">Login</h2>
             <form method="post" class="max-w-lg mx-auto">
                 {% csrf_token %}
@@ -57,8 +110,8 @@
                 </div>
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Login</button>
             </form>
+            <p class="text-black-300 ml-4 text-center">If you are new here, click <a class="hover:text-indigo-700" href={% url 'app:register' %}>here</a> to register! </p>
         </div>
-        <p class="text-black-300 ml-4 text-center">If you are new here, click <a class="hover:text-indigo-700" href={% url 'app:register' %}>here</a> to register! </p>
     {% endif %}
         
 </div>
