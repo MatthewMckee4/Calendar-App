@@ -4,7 +4,7 @@
     Index Page
 {% endblock %}
 {% block content %}
-<div class="container mx-auto mt-5 flex">
+<div class="mx-auto mt-5 flex justify-center">
     {% if user.is_authenticated %}
         {% if flag %}
             <div class="flex">
@@ -87,30 +87,17 @@
         {% else %}
             <!-- Logged in, but has not created a calendar -->
             <div class="text-center">
-                <a href={% url 'app:calendars' %}>
-                <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-5 px-10 border border-gray-400 rounded shadow text-2xl ml-4">
-                    Create A Calendar!
-                </button>
+                <a href="{% url 'app:calendars' %}">
+                    <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-5 px-10 border border-gray-400 rounded shadow text-2xl ml-4">
+                        Create A Calendar!
+                    </button>
                 </a>
             </div>
         {% endif %}
     <!-- If not logged-in, we can add more if wanted -->
     {% else %}
-        <div class="container mx-auto ml-4">
-            <h2 class="text-3xl font-bold mb-4">Login</h2>
-            <form method="post" class="max-w-lg mx-auto">
-                {% csrf_token %}
-                <div class="mb-4">
-                    <label for="id_username" class="block text-gray-700 font-bold mb-2">Username:</label>
-                    <input type="text" id="id_username" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label for="id_password" class="block text-gray-700 font-bold mb-2">Password:</label>
-                    <input type="password" id="id_password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Login</button>
-            </form>
-            <p class="text-black-300 ml-4 text-center">If you are new here, click <a class="hover:text-indigo-700" href={% url 'app:register' %}>here</a> to register! </p>
+        <div class="mx-auto">
+            <p> You're not logged in, <a class="hover:text-indigo-700" href="{% url 'app:register' %}"> Register now!</a> </p>
         </div>
     {% endif %}
         

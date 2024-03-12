@@ -13,7 +13,7 @@
     <nav class="bg-gray-800 p-4">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex">
-                <a class="text-white text-xl font-bold" href={% url 'app:index' %}>Home</a>
+                <a class="text-white font-bold" href={% url 'app:index' %}>Home</a>
                 {% if user.is_authenticated %}
                     <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:calendars' %}>My Calendars</a>
                 {% endif %}
@@ -30,7 +30,7 @@
         </div>
     </nav>
 
-    <div class="content">
+    <div class="mx-[100px] flex m">
         {% block content %}{% endblock %}
     </div>
 
