@@ -3,8 +3,8 @@ from django.urls import reverse
 from app.forms import UserRegistrationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from app.forms import LoginForm
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from app.forms import UserRegistrationForm, LoginForm, UserProfileForm
 from django.contrib.auth.models import User
 from datetime import date
@@ -109,7 +109,6 @@ def profile(request):
     userProfile = UserProfile.objects.get(user=request.user)
     if userProfile:
         context_dict["DoB"] = userProfile.date_of_birth
-<<<<<<< Updated upstream
         context_dict["profilePhoto"] = userProfile.profile_picture_url
 
     if request.method == "POST":
@@ -123,11 +122,23 @@ def profile(request):
         profile_form = UserProfileForm(instance=userProfile)
 
     context_dict["profile_form"] = profile_form
-=======
-        context_dict["profilePhoto"] = userProfile.profile_picture_url 
->>>>>>> Stashed changes
     return render(request, f"{APP_TEMPLATE_DIR}profile.html", context=context_dict)
 
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('app:index')
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, f"{APP_TEMPLATE_DIR}password_change_form.html", {'form': form})
 
 @login_required
 def logout_user(request):

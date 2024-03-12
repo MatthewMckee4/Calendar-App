@@ -5,7 +5,33 @@
 {% endblock %}
 
 {% block content %}
-<<<<<<< Updated upstream
+<div class="container mx-auto mt-5">
+    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4">Current Profile Display</h2>
+        <div class="mb-4">
+            <span>
+            {% if profilePhoto %}
+                    <img src="{{ profilePhoto }}" class="mb-4 inline-block rounded-full h-20 w-20  mx-auto">
+            {% endif %}
+            </span>
+            <span class="inline-flex block text-gray-700 font-bold text-lg mb-2">   {{user.username}}<span>
+            </a>
+        </div>
+    </div>
+    <br><br><br>
+    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-bold mb-4">Other Actions:</h2>
+        <div class="mb-4">
+            <a href="{% url 'app:password_change' %}"">
+                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change Password</button>
+            </a>
+            <a href="{% url 'auth_password_change' %}"">
+                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Delete Account</button>
+            </a>
+        </div>
+    </div>
+</div>
+
 <div class="container mx-auto mt-5">
     <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-4">Edit Profile</h2>
@@ -36,31 +62,8 @@
             </div>
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save Changes</button>
         </form>
+        <br>
+        
     </div>
 </div>
 {% endblock %}
-=======
-<div class="container mx-auto bg-green">
-    <div class="row">
-        <h1>Display Profile</h1>
-        <img src="{{ profilePhoto }}">
-        <p>Username: {{ user.username }}</p>
-    </div>
-</div>
-<div>
-    <h2>Your Details</h2>
-    <p>First Name: {{ fname }}</p>
-    <p>Surname: {{ lname }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Date of Birth: {{ DoB }}</p>
-</div>
-
-<div>
-    <a href="{% url 'auth_password_change' %}"">
-        <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-5 px-10 border border-gray-400 rounded shadow text-2xl ml-4">
-            Change Password
-        </button>
-    </a>
-</div>
-{% endblock %}
->>>>>>> Stashed changes
