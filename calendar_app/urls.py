@@ -21,4 +21,5 @@ urlpatterns = [
     path("", index, name="index"),
     path("app/", include("app.urls")),
     path("admin/", admin.site.urls),
+    path('accounts/', include('registration.backends.simple.urls')),
 ]

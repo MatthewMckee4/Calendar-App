@@ -109,6 +109,7 @@ def profile(request):
     userProfile = UserProfile.objects.get(user=request.user)
     if userProfile:
         context_dict["DoB"] = userProfile.date_of_birth
+<<<<<<< Updated upstream
         context_dict["profilePhoto"] = userProfile.profile_picture_url
 
     if request.method == "POST":
@@ -122,6 +123,9 @@ def profile(request):
         profile_form = UserProfileForm(instance=userProfile)
 
     context_dict["profile_form"] = profile_form
+=======
+        context_dict["profilePhoto"] = userProfile.profile_picture_url 
+>>>>>>> Stashed changes
     return render(request, f"{APP_TEMPLATE_DIR}profile.html", context=context_dict)
 
 
