@@ -27,7 +27,7 @@ def index(request):
                     return redirect(reverse("app:index"))
     else:
         form = LoginForm()
-    flag = False
+    flag = True
     if request.user.is_authenticated:
         calendar_exist = Calendar.objects.filter(user=request.user).exists()
         if calendar_exist:
