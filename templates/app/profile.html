@@ -6,8 +6,8 @@
 
 {% block content %}
 <div class="container mx-auto mt-5">
-    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4">Current Profile Display</h2>
+    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg relative">
+        <h2 class="text-2xl font-bold mb-4 ">Current Profile Display</h2>
         <div class="mb-4">
             <span>
             {% if profilePhoto %}
@@ -15,6 +15,9 @@
             {% endif %}
             </span>
             <span class="inline-flex block text-gray-700 font-bold text-lg mb-2"><hr>{{user.username}}<span>
+            </a>
+            <a href="{% url 'app:profile_change' %}"">
+                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute right-5 bottom-5 ">Upload New Photo</button>
             </a>
         </div>
     </div>
@@ -34,7 +37,7 @@
 
 <div class="container mx-auto mt-5">
     <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4">Edit Profile</h2>
+        <h2 class="text-2xl font-bold mb-4">Your Details</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-4">

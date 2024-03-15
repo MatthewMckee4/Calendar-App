@@ -113,16 +113,15 @@ def profile(request):
         context_dict["profilePhoto"] = userProfile.profile_picture_url
 
     if request.method == "POST":
-        profile_form = UserProfileForm(
-            request.POST, request.FILES, instance=userProfile
-        )
-        if profile_form.is_valid():
-            profile_form.save()
+        user_form = UserRegistrationForm(request.POST, instance=userProfile)
+        if user_form.is_valid():
+            user = user_form.save(commit=False)
+            user.save()
             return redirect(reverse("app:profile"))
     else:
-        profile_form = UserProfileForm(instance=userProfile)
+        user_form = UserRegistrationForm(instance=userProfile)
 
-    context_dict["profile_form"] = profile_form
+    context_dict["user_form"] = user_form
     return render(request, f"{APP_TEMPLATE_DIR}profile.html", context=context_dict)
 
 @login_required
@@ -140,6 +139,21 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, f"{APP_TEMPLATE_DIR}password_change_form.html", {'form': form})
+
+@login_required
+def change_profile(request):
+    context_dict={}
+    userProfile = UserProfile.objects.get(user=request.user)
+    profile_form = UserProfileForm(request.POST, request.FILES, instance=userProfile)
+    if profile_form.is_valid():
+        profile_form.save()
+        return redirect(reverse("app:change_profile"))
+    else:
+        profile_form = UserProfileForm(instance=userProfile)
+
+    context_dict["profile_form"] = profile_form
+    return render(request, f"{APP_TEMPLATE_DIR}profile_change.html", context=context_dict)
+
 
 @login_required
 def logout_user(request):
