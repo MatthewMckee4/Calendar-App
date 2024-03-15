@@ -13,5 +13,5 @@ urlpatterns = [
     path("calendars/", views.calendars, name="calendars"),
     path("password-change/", views.change_password, name="password_change"),
     path("events/", views.events, name="events"),
-    path("profile-change/", views.change_profile, name="profile_change")
+    path("profile-change/", views.change_profile_photo, name="profile_change")
 ]

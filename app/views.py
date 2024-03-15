@@ -141,13 +141,13 @@ def change_password(request):
     return render(request, f"{APP_TEMPLATE_DIR}password_change_form.html", {'form': form})
 
 @login_required
-def change_profile(request):
+def change_profile_photo(request):
     context_dict={}
     userProfile = UserProfile.objects.get(user=request.user)
     profile_form = UserProfileForm(request.POST, request.FILES, instance=userProfile)
     if profile_form.is_valid():
         profile_form.save()
-        return redirect(reverse("app:change_profile"))
+        return redirect(reverse("app:profile"))
     else:
         profile_form = UserProfileForm(instance=userProfile)
 
