@@ -1,10 +1,44 @@
+
 {% extends 'app/base.html' %}
-
 {% block title %}
-    Calendars
+My calendar
 {% endblock %}
-
 {% block content %}
-<div class="container mx-auto mt-5">
+<head>
+    <meta charset="utf-8">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="/static/css/calendar.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<div class="wrapper">
+    <header>
+        <h1 class="text-3xl font-bold">{{user.username}}'s Calendar</h1>
+    </header>
+    <div class="calendar-header">
+        <div class="month-navigation">
+            <span id="prev-month" class="material-symbols-rounded">&lt;</span>
+            <span class="current-date"></span>
+            <span id="next-month" class="material-symbols-rounded">&gt;</span>
+        </div>
+        <div class="view-options">
+            <button id="day-view-btn" class="btn">Day View</button>
+            <button id="week-view-btn" class="btn">Week View</button>
+            <button id="month-view-btn" class="btn-active">Month View</button>
+        </div>
+    </div>
+    <div class="calendar">
+        <ul class="weekdays">
+            <li>Monday</li>
+            <li>Tuesday</li>
+            <li>Wednesday</li>
+            <li>Thursday</li>
+            <li>Friday</li>
+            <li>Saturday</li>
+            <li>Sunday</li>
+        </ul>
+        <ul class="days">
+        </ul>
+    </div>
 </div>
-{% endblock %}
+<script src="/static/js/calendar.js"></script>
+{% endblock%}
