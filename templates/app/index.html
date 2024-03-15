@@ -46,31 +46,27 @@
                     </table>
                     <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 1100px;">
                         <h2 class="text-2xl font-semibold mb-2">Display Calendars</h2>
-                    
-                        <div class="flex items-center mb-2">
-                            <input type="checkbox" id="calendar1" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
-                            <label for="calendar1" class="text-gray-700">Calendar 1</label>
-                        </div>
-                    
-                        <div class="flex items-center mb-2">
-                            <input type="checkbox" id="calendar2" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
-                            <label for="calendar2" class="text-gray-700">Calendar 2</label>
-                        </div>
-                    
-                        <div class="flex items-center">
-                            <input type="checkbox" id="calendar3" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
-                            <label for="calendar3" class="text-gray-700">Calendar 3</label>
-                        </div>
+
+                        {% if c in calendars %}
+                            {% for c in calendars %}
+                            <div class="flex items-center mb-2">
+                                <input type="checkbox" id="calendar1" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
+                                <label for="calendar1" class="text-gray-700">{{ c.name }}</label>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
                 <div>
                     <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
                         <h2 class="text-2xl font-semibold mb-2">My Notifications</h2>
                         <p>Reminders and invitation for events</p>
+                        <p>Click <a class="hover:text-indigo-700" href="{% url 'app:notifications' %}">here</a> to view all! </p>
                     </div>
                     <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
                         <h2 class="text-2xl font-semibold mb-2">My Events</h2>
                         <p>Create and search for your events</p>
+                        <p>Click <a class="hover:text-indigo-700" href="{% url 'app:events' %}">here</a> to view all! </p>
                     </div>
                     <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
                         <h2 class="text-2xl font-semibold mb-2">Next Event</h2>

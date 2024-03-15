@@ -5,29 +5,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from app.forms import UserRegistrationForm, LoginForm, UserProfileForm
+from app.forms import UserRegistrationForm, LoginForm, UserProfileForm, EventForm
 from django.contrib.auth.models import User
 from datetime import date
-from app.models import UserProfile
-from app.models import Calendar
-from app.forms import EventForm
+from app.models import UserProfile, Calendar, Event
 
 APP_TEMPLATE_DIR = "app/"
 
 
 def index(request):
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return redirect(reverse("app:index"))
-    else:
-        form = LoginForm()
+    calendar_list = Calendar.objects
+    event_list = Event.objects
     flag = True
     if request.user.is_authenticated:
         calendar_exist = Calendar.objects.filter(user=request.user).exists()
@@ -35,9 +23,10 @@ def index(request):
             flag = True
     context_dict = {
         "date": date.today(),
-        "form": form,
         "flag": flag,
         "user": request.user,
+        "calendars": calendar_list,
+        "events": event_list,
     }
     return render(request, f"{APP_TEMPLATE_DIR}index.html", context=context_dict)
 
@@ -175,3 +164,7 @@ def events(request):
     else:
         form = EventForm()
     return render(request, f"{APP_TEMPLATE_DIR}events.html", {'form': form})
+
+@login_required
+def notifications(request):
+    return render(request, f"{APP_TEMPLATE_DIR}notifications.html")
