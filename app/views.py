@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from datetime import date
 from app.models import UserProfile
 from app.models import Calendar
+from app.forms import EventForm
 
 APP_TEMPLATE_DIR = "app/"
 
@@ -149,3 +150,14 @@ def logout_user(request):
 @login_required
 def calendars(request):
     return render(request, f"{APP_TEMPLATE_DIR}calendars.html")
+
+@login_required
+def events(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('app:events')
+    else:
+        form = EventForm()
+    return render(request, f"{APP_TEMPLATE_DIR}events.html", {'form': form})

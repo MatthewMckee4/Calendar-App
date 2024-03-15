@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from app.models import UserProfile
-
+from .models import Event
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
@@ -38,3 +38,8 @@ class UserProfileForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['owner', 'attendees', 'description', 'start_date_time', 'end_date_time', 'location_latitude', 'location_longitude', 'recurring', 'recurring_frequency']

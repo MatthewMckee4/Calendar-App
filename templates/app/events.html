@@ -1,0 +1,29 @@
+{% extends 'app/base.html' %}
+
+{% block title %}
+    Events
+{% endblock %}
+
+{% block content %}
+    <div class="flex">
+    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 1100px;">
+        <div class="container mx-auto mt-5">
+            <form class="form-inline my-2 my-lg-0" action="" method="get">
+                {% csrf_token %}
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+            </form>
+        </div>
+    </div>
+    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 1100px;">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-2 ml-4">Create an Event</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Create Event</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
