@@ -1,6 +1,7 @@
 from __future__ import annotations
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 
 class UserProfile(models.Model):
@@ -18,8 +19,8 @@ class Event(models.Model):
     )
     attendees = models.ManyToManyField(User, related_name="attended_events")
     description = models.CharField(max_length=512)
-    start_date_time = models.DateTimeField()
-    end_date_time = models.DateTimeField()
+    start_date_time = models.DateTimeField(default=datetime.now)
+    end_date_time = models.DateTimeField(default=datetime.now)
     location_latitude = models.FloatField(null=True, blank=True)
     location_longitude = models.FloatField(null=True, blank=True)
     recurring = models.BooleanField(default=False)
