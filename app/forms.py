@@ -43,3 +43,9 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ['owner', 'attendees', 'description', 'start_date_time', 'end_date_time', 'location_latitude', 'location_longitude', 'recurring', 'recurring_frequency']
+        widgets = {
+            'owner': forms.Select(),
+            'attendees': forms.SelectMultiple(),
+            'start_date_time': forms.DateTimeInput(),
+            'end_date_time': forms.DateTimeInput(),
+        }

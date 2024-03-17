@@ -10,17 +10,26 @@
         <div class="container mx-auto mt-5">
             <form class="form-inline my-2 my-lg-0" action="" method="get">
                 {% csrf_token %}
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+                <div class="pt-2 relative mx-auto text-gray-600">
+                    <input type="search" id="default-search" name="search-bar" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required />
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 absolute right-2 bottom-1 text-white text-sm py-1 px-2 rounded">Search</button>
+                </div>
             </form>
+            {% if events %}
+            {% for e in events %}
+            {% endfor %}
+            {% endif %}
         </div>
     </div>
     <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 1100px;">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold mb-2 ml-4">Create an Event</h2>
-            <form method="post">
+            <form class="w-full max-w-lg" method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Create Event</button>
+                <div class="mb-4">
+                    {{ form.as_p }}
+                </div>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Create Event</button>
             </form>
         </div>
     </div>

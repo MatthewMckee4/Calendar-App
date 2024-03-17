@@ -13,9 +13,6 @@ urlpatterns = [
     path("calendars/", views.calendars, name="calendars"),
     path("password-change/", views.change_password, name="password_change"),
     path("events/", views.events, name="events"),
-<<<<<<< HEAD
-    path("profile-change/", views.change_profile_photo, name="profile_change")
-=======
+    path("profile-change/", views.change_profile_photo, name="profile_change"),
     path("notifications/", views.notifications, name="notifications"),
->>>>>>> 16bac45ab26e11094c11d253be0d4949e6118bca
 ]
