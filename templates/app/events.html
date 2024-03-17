@@ -21,14 +21,70 @@
             {% endif %}
         </div>
     </div>
-    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 1100px;">
+    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="width: 100%;">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold mb-2 ml-4">Create an Event</h2>
             <form class="w-full max-w-lg" method="post">
-                {% csrf_token %}
-                <div class="mb-4">
-                    {{ form.as_p }}
+                {% csrf_token %}      
+                <div class="flex items-start space-x-4 mb-4">
+                    <div class="flex flex-col space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <label for="description" class="block text-sm font-medium text-gray-700">Event Name:</label>
+                            <div>
+                                {{ form.description }}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label for="location_latitude" class="block text-sm font-medium text-gray-700">Latitude:</label>
+                            <div>
+                                {{ form.location_latitude }}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label for="location_longitude" class="block text-sm font-medium text-gray-700">Longitude:</label>
+                            <div>
+                                {{ form.location_longitude }}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label for="start_date_time" class="block text-sm font-medium text-gray-700">Start Time:</label>
+                            <div>
+                                {{ form.start_date_time }}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label for="end_date_time" class="block text-sm font-medium text-gray-700">End Time:</label>
+                            <div>
+                                {{ form.end_date_time }}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label for="owner" class="block text-sm font-medium text-gray-700">Event Owner:</label>
+                            <div>
+                                {{ form.owner }}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label for="attendees" class="block text-sm font-medium text-gray-700">Attendees:</label>
+                            <div>
+                                {{ form.attendees }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-start">
+                        <label for="recurring" class="block text-sm font-medium text-gray-700">Repeat this event:</label>
+                        <div>
+                            {{ form.recurring }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-start w-32">
+                        <label for="recurring_frequency" class="block text-sm font-medium text-gray-700">Repeat frequency:</label>
+                        <div>
+                            {{ form.recurring_frequency }}
+                        </div>
+                    </div>
                 </div>
+                
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Create Event</button>
             </form>
         </div>

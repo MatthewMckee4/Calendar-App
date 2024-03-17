@@ -48,4 +48,7 @@ class EventForm(forms.ModelForm):
             'attendees': forms.SelectMultiple(),
             'start_date_time': forms.DateTimeInput(),
             'end_date_time': forms.DateTimeInput(),
+            'description': forms.Textarea(attrs={'label': 'Event Name', 'cols': 20, 'rows': 1}),
+            'location_latitude': forms.TextInput(attrs={'label': 'Latitude', 'cols': 20, 'rows': 1}),
+            'location_longitude': forms.TextInput(attrs={'label': 'Longitude', 'cols': 20, 'rows': 1}),
         }
