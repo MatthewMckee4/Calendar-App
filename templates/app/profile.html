@@ -16,7 +16,7 @@
             </span>
             <span class="inline-flex block text-gray-700 font-bold text-lg mb-2"><hr>{{user.username}}<span>
             </a>
-            <a href="{% url 'app:profile_change' %}"">
+            <a href="{% url 'app:profile_change' %}">
                 <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute right-5 bottom-5 ">Upload New Photo</button>
             </a>
         </div>
@@ -41,34 +41,28 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-4">
-                {% if profilePhoto %}
-                    <img src="{{ profilePhoto }}" class="mb-4 rounded-full h-32 w-32 mx-auto">
-                {% endif %}
-                <label for="id_profile_picture" class="block text-gray-700 font-bold mb-2">Profile Picture (optional):</label>
-                <input type="file" id="id_profile_picture" name="profile_picture" accept="image/*" class="border border-gray-400 rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username</label>
+                <input type="text" name="username" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ user.username }}">
             </div>
             <div class="mb-4">
-                <label for="id_first_name" class="block text-gray-700 font-bold mb-2">First Name:</label>
-                {{ fname }}
-                <input type="text" id="id_first_name" name="first_name" value="{{ user.first_name }}" class="border border-gray-400 rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
+                <input type="email" name="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ user.email }}">
             </div>
             <div class="mb-4">
-                <label for="id_last_name" class="block text-gray-700 font-bold mb-2">Last Name:</label>
-                <input type="text" id="id_last_name" name="last_name" value="{{ user.last_name }}" class="border border-gray-400 rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="first_name">First Name</label>
+                <input type="text" name="first_name" id="first_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ user.first_name }}">
             </div>
             <div class="mb-4">
-                <label for="id_email" class="block text-gray-700 font-bold mb-2">Email address:</label>
-                <input type="email" id="id_email" name="email" value="{{ user.email }}" class="border border-gray-400 rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="last_name">Last Name</label>
+                <input type="text" name="last_name" id="last_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ user.last_name }}">
             </div>
             <div class="mb-4">
-                <label for="id_date_of_birth" class="inline-flex block text-gray-700 font-bold mb-2">Date of Birth:</label>
-                <span class="inline-flex">{{ DoB }}</span>
-                <input type="date" id="id_date_of_birth" name="date_of_birth" value="{{ DoB }}" class="border border-gray-400 rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="date_of_birth">Date of Birth</label>
+                <input type="date" name="date_of_birth" id="date_of_birth" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.date_of_birth|date:'Y-m-d' }}">
             </div>
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save Changes</button>
         </form>
-        <br>
-        
     </div>
 </div>
+
 {% endblock %}

@@ -92,48 +92,57 @@ def user_login(request):
 
 @login_required
 def profile(request):
-    context_dict = {}
-
-    full_name_list = request.user.get_full_name().split(" ")
-    context_dict["fname"] = full_name_list[0]
-    context_dict["lname"] = full_name_list[1]
-
-    userProfile = UserProfile.objects.get(user=request.user)
-    if userProfile:
-        context_dict["DoB"] = userProfile.date_of_birth
-        context_dict["profilePhoto"] = userProfile.profile_picture_url
+    user = request.user
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
 
     if request.method == "POST":
-        user_form = UserRegistrationForm(request.POST, instance=userProfile)
-        if user_form.is_valid():
-            user = user_form.save(commit=False)
-            user.save()
-            return redirect(reverse("app:profile"))
-    else:
-        user_form = UserRegistrationForm(instance=userProfile)
+        profile_form = UserProfileForm(request.POST, instance=user_profile)
 
-    context_dict["user_form"] = user_form
-    return render(request, f"{APP_TEMPLATE_DIR}profile.html", context=context_dict)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect(reverse("app:profile"))
+
+    else:
+        # Pass both User instance and UserProfile instance to the form
+        profile_form = UserProfileForm(
+            instance=user_profile,
+            initial={
+                "username": user.username,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+            },
+        )
+
+    return render(
+        request,
+        f"{APP_TEMPLATE_DIR}profile.html",
+        {"profile_form": profile_form},
+    )
+
 
 @login_required
 def change_password(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            return redirect('app:index')
+            return redirect("app:index")
         else:
             for field in form:
                 for error in field.errors:
                     messages.error(request, f"{field.label}: {error}")
     else:
         form = PasswordChangeForm(request.user)
-    return render(request, f"{APP_TEMPLATE_DIR}password_change_form.html", {'form': form})
+    return render(
+        request, f"{APP_TEMPLATE_DIR}password_change_form.html", {"form": form}
+    )
+
 
 @login_required
 def change_profile_photo(request):
-    context_dict={}
+    context_dict = {}
     userProfile = UserProfile.objects.get(user=request.user)
     profile_form = UserProfileForm(request.POST, request.FILES, instance=userProfile)
     if profile_form.is_valid():
@@ -143,7 +152,9 @@ def change_profile_photo(request):
         profile_form = UserProfileForm(instance=userProfile)
 
     context_dict["profile_form"] = profile_form
-    return render(request, f"{APP_TEMPLATE_DIR}profile_change.html", context=context_dict)
+    return render(
+        request, f"{APP_TEMPLATE_DIR}profile_change.html", context=context_dict
+    )
 
 
 @login_required
@@ -156,23 +167,33 @@ def logout_user(request):
 def calendars(request):
     return render(request, f"{APP_TEMPLATE_DIR}calendars.html")
 
+
 @login_required
 def events(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = EventForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('app:events')
+            return redirect("app:events")
     else:
         form = EventForm()
 
-    search_q = request.GET.get('search', '')
+    search_q = request.GET.get("search", "")
     if search_q:
         events = Event.objects.filter(title__icontains=search_q)
     else:
         events = Event.objects.all()
-    
-    return render(request, f"{APP_TEMPLATE_DIR}events.html", {'form': form, 'events': events, 'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY})
+
+    return render(
+        request,
+        f"{APP_TEMPLATE_DIR}events.html",
+        {
+            "form": form,
+            "events": events,
+            "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
+        },
+    )
+
 
 @login_required
 def notifications(request):

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from app.models import UserProfile
 from .models import Event
 
+
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label="Password", widget=forms.PasswordInput)
     confirm_password = forms.CharField(
@@ -11,7 +12,14 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "confirm_password", "first_name", "last_name"]
+        fields = [
+            "username",
+            "email",
+            "password",
+            "confirm_password",
+            "first_name",
+            "last_name",
+        ]
 
     def clean_confirm_password(self):
         cleaned_data = super().clean()
@@ -25,30 +33,73 @@ class UserRegistrationForm(forms.ModelForm):
 
 
 class UserProfileForm(forms.ModelForm):
-    date_of_birth = forms.DateField(
-        label="Date of Birth", widget=forms.DateInput(attrs={"type": "date"})
-    )
-    profile_picture = forms.ImageField(label="Profile Picture", required=False)
+    username = forms.CharField(max_length=150, required=True, label="Username")
+    first_name = forms.CharField(max_length=30, required=False, label="First Name")
+    last_name = forms.CharField(max_length=30, required=False, label="Last Name")
+    email = forms.EmailField(required=True, label="Email")
+    date_of_birth = forms.DateField(required=False, label="Date of Birth")
 
     class Meta:
         model = UserProfile
-        fields = ["date_of_birth", "profile_picture"]
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "date_of_birth",
+        ]
+
+    def save(self, commit=True):
+        # Save UserProfile fields
+        user_profile = super().save(commit=False)
+        if commit:
+            user_profile.save()
+
+        # Update related User fields
+        user = user_profile.user
+        user.username = self.cleaned_data.get("username")
+        user.first_name = self.cleaned_data.get("first_name")
+        user.last_name = self.cleaned_data.get("last_name")
+        user.email = self.cleaned_data.get("email")
+        user.date_of_birth = self.cleaned_data.get("date_of_birth")
+
+        if commit:
+            user.save()
+
+        return user_profile
 
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
 
+
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['owner', 'attendees', 'description', 'start_date_time', 'end_date_time', 'location_latitude', 'location_longitude', 'recurring', 'recurring_frequency']
+        fields = [
+            "owner",
+            "attendees",
+            "description",
+            "start_date_time",
+            "end_date_time",
+            "location_latitude",
+            "location_longitude",
+            "recurring",
+            "recurring_frequency",
+        ]
         widgets = {
-            'owner': forms.Select(),
-            'attendees': forms.SelectMultiple(),
-            'start_date_time': forms.DateTimeInput(),
-            'end_date_time': forms.DateTimeInput(),
-            'description': forms.Textarea(attrs={'label': 'Event Name', 'cols': 20, 'rows': 1}),
-            'location_latitude': forms.TextInput(attrs={'label': 'Latitude', 'cols': 20, 'rows': 1}),
-            'location_longitude': forms.TextInput(attrs={'label': 'Longitude', 'cols': 20, 'rows': 1}),
+            "owner": forms.Select(),
+            "attendees": forms.SelectMultiple(),
+            "start_date_time": forms.DateTimeInput(),
+            "end_date_time": forms.DateTimeInput(),
+            "description": forms.Textarea(
+                attrs={"label": "Event Name", "cols": 20, "rows": 1}
+            ),
+            "location_latitude": forms.TextInput(
+                attrs={"label": "Latitude", "cols": 20, "rows": 1}
+            ),
+            "location_longitude": forms.TextInput(
+                attrs={"label": "Longitude", "cols": 20, "rows": 1}
+            ),
         }
