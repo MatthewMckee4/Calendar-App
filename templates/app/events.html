@@ -1,12 +1,18 @@
 {% extends 'app/base.html' %}
+{% load static %}
 
 {% block title %}
     Events
 {% endblock %}
 
 {% block content %}
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}"></script>
+<script src="{% static 'js/reverseGeocode.js' %}" data-api-key="{{ google_maps_api_key }}" async defer></script>
+
+
     <div class="flex">
-    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 1100px;">
+    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 100%;">
         <div class="container mx-auto mt-5">
             <form class="form-inline my-2 my-lg-0" action="" method="get">
                 {% csrf_token %}
@@ -16,8 +22,31 @@
                 </div>
             </form>
             {% if events %}
-            {% for e in events %}
-            {% endfor %}
+            <div class="events-list">
+                {% for e in events %}
+                <div class="bg-gray-400 rounded shadow-md ml-2 mb-4">
+                    <h3>{{ e.description }}</h3>
+                    <p>Start: {{ e.start_date_time }}</p>
+                    <p id="location-{{ forloop.counter }}"></p>
+                    <script>
+                        function waitForReverseGeocodeAndExecute() {
+                            if (typeof reverseGeocode === "undefined") {
+                                setTimeout(waitForReverseGeocodeAndExecute, 100);
+                            } else {
+                                {% for e in events %}
+                                if ({{ e.location_latitude }} && {{ e.location_longitude }}) {
+                                    reverseGeocode({{ e.location_latitude }}, {{ e.location_longitude }}, function(address) {
+                                        document.getElementById('location-{{ forloop.counter }}').textContent = address;
+                                    });
+                                }
+                                {% endfor %}
+                            }
+                        }
+                        waitForReverseGeocodeAndExecute();
+                        </script>
+                </div>
+                {% endfor %}
+            </div>
             {% endif %}
         </div>
     </div>

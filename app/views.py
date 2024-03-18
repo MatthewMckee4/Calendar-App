@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.conf import settings
 from app.forms import UserRegistrationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,7 @@ from app.forms import UserRegistrationForm, LoginForm, UserProfileForm, EventFor
 from django.contrib.auth.models import User
 from datetime import date
 from app.models import UserProfile, Calendar, Event
+from .models import Event
 
 APP_TEMPLATE_DIR = "app/"
 
@@ -163,7 +165,14 @@ def events(request):
             return redirect('app:events')
     else:
         form = EventForm()
-    return render(request, f"{APP_TEMPLATE_DIR}events.html", {'form': form})
+
+    search_q = request.GET.get('search', '')
+    if search_q:
+        events = Event.objects.filter(title__icontains=search_q)
+    else:
+        events = Event.objects.all()
+    
+    return render(request, f"{APP_TEMPLATE_DIR}events.html", {'form': form, 'events': events, 'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY})
 
 @login_required
 def notifications(request):
