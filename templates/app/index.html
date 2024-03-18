@@ -13,7 +13,7 @@
                     <p class ="text-2xl ml-4 mb-1">{{ date }}</p>
                     <p class ="text-xl ml-4 mb-2">This Week</p>
                     <!-- Table not completed, after implementation of calendars can we add context to the table -->
-                    <table class="fixed relative mb-5 ml-2">
+                    <table class="fixed relative mb-5 ml-2" style="max-width: 1000px;">
                         <thead>
                             <col width="150px" />
                             <col width="150px" />
@@ -32,22 +32,41 @@
                                 <th class="border border-slate-300">Sunday</th>
                             </tr>
                         </thead>
+                        <!-- everything in one cell and same row
                         <tbody>
                             <tr>
-                                <!-- Temporary fill-in -->
-                                <td>Example Event</td>
-                                <td>Example Event</td>
-                                <td>Example Event</td>
-                            </tr>
-                            <tr>
-                                <td>Example Event</td>
+                                {% for day in week_days %}
+                                    <td>
+                                        {% for event in events_this_week %}
+                                            {% if event.start_date_time.date == day %}
+                                                <div class="text-center">{{ event.description }}</div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% endfor %}
                             </tr>
                         </tbody>
+                        -->
+                        <!--everything is in its own rows but also own cells
+                        <tbody>
+                            {% for event in events_this_week %}
+                                <tr>
+                                    {% for day in week_days %}
+                                        {% if event.start_date_time.date == day %}
+                                            <td><div class="text-center mt-1 mb-1">{{ event.description }}</div></td>
+                                        {% else %}
+                                            <td></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    -->    
                     </table>
-                    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 1100px;">
+                    <div class="bg-gray-200 p-4 rounded shadow-md ml-2 mb-5" style="max-width: 1000px; overflow-y: auto; overflow-x: auto;;">
                         <h2 class="text-2xl font-semibold mb-2">Display Calendars</h2>
 
-                        {% if c in calendars %}
+                        {% if calendars %}
                             {% for c in calendars %}
                             <div class="flex items-center mb-2">
                                 <input type="checkbox" id="calendar1" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
@@ -70,11 +89,11 @@
                     </div>
                     <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
                         <h2 class="text-2xl font-semibold mb-2">Next Event</h2>
-                        <p>Your next event is in XX minutes</p>
+                        <p>Your next event is in {{ hours_until_next_event }} hours and {{ minutes_until_next_event }} minutes</p>
                         <div class="bg-gray-300 p-4 rounded shadow-md max-w-md mb-2">
-                            <p>Event Title</p>
-                            <p>Location</p>
-                            <p>Start Time, Date</p>
+                            <p>Title: {{next_event.description}}</p>
+                            <p>Location: {{ next_event.location_latitude }}, {{ next_event.location_longitude }}</p>
+                            <p>Time, Date: {{next_event.start_date_time.time}}, {{next_event.start_date_time.date}}</p>
                         </div>
                     </div>
                 </div>

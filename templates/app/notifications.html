@@ -7,21 +7,59 @@
 {% block content %}
 <div class="container mx-auto mt-5">
     <div class="flex">
-        <div class="bg-gray-200 p-4 rounded shadow-md ml-10" style="min-width: 600px;">
-            <form class="max-w-md mx-auto">
+        <div class="bg-gray-300 p-4 rounded shadow-md ml-10" style="min-width: 600px; max-height: 600px; overflow-y: auto; overflow-x: auto;">
+            <form class="max-w-md mx-auto" method="GET" action="">
                 <div class="pt-2 relative mx-auto text-gray-600">
-                    <input type="search" id="default-search" name="search-bar" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required />
+                    <input type="search" id="default-search" name="search-bar" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ search_query }}" />
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 absolute right-2 bottom-1 text-white text-sm py-1 px-2 rounded">Search</button>
                 </div>
             </form>
             <!-- list the events -->
             {% if events %}
             {% for e in events %}
+                <div class="bg-gray-200 p-4 rounded shadow-md mt-6">
+                    <div class="flex">
+                        <div class="container mx-auto mt-1">
+                            <h2 class="text-xl font-semibold mb-2">Event Reminder</h2>
+                            <p>Details: <a href="{% url 'app:notifications' %}?event_id={{ e.id }}">{{ e.description }}</a></p>
+                            <p>Location: {{ e.location_latitude }}, {{ e.location_longitude }} </p>
+                        </div>
+                        <div class="container mx-auto mt-1">
+                            <p> Start Time: {{ e.start_date_time.time }} </p>
+                            <p> Date: {{ e.start_date_time.date }} </p>
+                            <p> Duration: {{ e.end_date_time|timeuntil:e.start_date_time }} </p>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
             {% endif %}
         </div>
-        <div class="ml-10 bg-gray-200 p-6 rounded shadow-md" style="min-width: 750px;">
-            <h2 class="text-2xl font-semibold mb-2">Event Reminder</h2>
+        <div class="ml-10 bg-gray-200 p-6 rounded shadow-md" style="min-width: 750px; max-width: 750px; max-height: 600px; overflow-y: auto; overflow-x: auto;">
+            <div class="flex">
+                <div>
+                    <h2 class="text-3xl font-semibold mb-4">Event Reminder</h2>
+                    <!--If an event was clicked on-->
+                    <p class="mb-4 ml-4 text-xl">This is a reminder for {{event_details.description}}</p>
+                    <p class="mb-4 ml-4 text-xl">Located at: {{ event_details.location_latitude }}, {{ event_details.location_longitude }} </p>
+                    <p class="mb-4 ml-4 text-xl">Start Date: {{event_details.start_date_time.date }} </p>
+                    <p class="mb-4 ml-4 text-xl">End Date: {{event_details.end_date_time.date }} </p>
+                    <p class="mb-4 ml-4 text-xl">Start Time: {{event_details.start_date_time.time }} </p>
+                    <p class="mb-4 ml-4 text-xl">End Time: {{event_details.end_date_time.time }} </p>
+                    <!--
+                    <p class="mb-2">Details:</p>
+                    <div class="bg-gray-300 p-2 rounded shadow-md mb-2" style="max-width: 400px;">
+                        <p>*DETAILS*</p>
+                    </div>
+                    -->
+                </div>
+                <div class="ml-12 mt-12">
+                    <p class=" ml-4 text-xl">Attendees</p>
+                    <div class="flex items-center mb-2 ml-4 text-xl">
+                        <input type="checkbox" id="attendee1" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
+                        <label for="attendee1" class="text-gray-700">Attendee1</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
