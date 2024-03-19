@@ -1,3 +1,4 @@
+import os
 from django import forms
 from django.contrib.auth.models import User
 from app.models import UserProfile
@@ -59,7 +60,11 @@ class UserProfileForm(forms.ModelForm):
         user.last_name = self.cleaned_data.get("last_name")
         user.email = self.cleaned_data.get("email")
         user.date_of_birth = self.cleaned_data.get("date_of_birth")
-        user.profile_picture = self.cleaned_data.get("profile_picture")
+        profile_picture = self.cleaned_data.get("profile_picture")
+        if profile_picture:
+            user.profile_picture = profile_picture
+        else:
+            user.profile_picture = None
 
         if commit:
             user_profile.save()

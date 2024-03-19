@@ -24,7 +24,9 @@
                     <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:profile' %}>
                         <div class="inline-block">
                             Profile
-                            <img src="{{ profile_form.instance.profile_picture.url }}" alt="Profile Picture" class="rounded-full h-8 w-8 mx-auto inline-block">
+                            {% if user.userprofile.profile_picture %}
+                                <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile Picture" class="rounded-full h-6 w-6 mb-1 mx-auto inline-block">
+                            {% endif %}
                         </div>
                     </a>
                     <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:logout' %}>Logout</a>

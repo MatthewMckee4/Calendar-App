@@ -5,15 +5,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto mt-5">
+<div class="max-w-lg mx-auto p-8 rounded-lg shadow-lg my-5">
     <form method="post" class="max-w-lg mx-auto">
         {% csrf_token %}
         <div class="my-2">
-            <label for="id_username" class="block text-gray-700 font-bold">Username:</label>
+            <label for="id_username" class="block text-gray-700 text-m font-bold mb-2">Username:</label>
             <input type="text" id="id_username" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
         </div>
         <div class="my-2">
-            <label for="id_password" class="block text-gray-700 font-bold ">Password:</label>
+            <label for="id_password" class="block text-gray-700 text-m font-bold mb-2">Password:</label>
             <input type="password" id="id_password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
         </div>
         <div class="my-2">
