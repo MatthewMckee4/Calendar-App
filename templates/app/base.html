@@ -21,7 +21,12 @@
             </div>
             <div class="flex">
                 {% if user.is_authenticated %}
-                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:profile' %}>Profile</a>
+                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:profile' %}>
+                        <div class="inline-block">
+                            Profile
+                            <img src="{{ profile_form.instance.profile_picture.url }}" alt="Profile Picture" class="rounded-full h-8 w-8 mx-auto inline-block">
+                        </div>
+                    </a>
                     <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:logout' %}>Logout</a>
                 {% else %}
                     <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:login' %}>Login</a>
@@ -31,7 +36,7 @@
         </div>
     </nav>
 
-    <div class="mx-[100px] flex m">
+    <div class="mx-[100px]">
         {% block content %}{% endblock %}
     </div>
 

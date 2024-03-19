@@ -5,64 +5,50 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto mt-5">
-    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg relative">
-        <h2 class="text-2xl font-bold mb-4 ">Current Profile Display</h2>
-        <div class="mb-4">
-            <span>
-            {% if profilePhoto %}
-                    <img src="{{ profilePhoto }}" class="mb-4 inline-block rounded-full h-20 w-20  mx-auto">
-            {% endif %}
-            </span>
-            <span class="inline-flex block text-gray-700 font-bold text-lg mb-2"><hr>{{user.username}}<span>
-            </a>
-            <a href="{% url 'app:profile_change' %}">
-                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute right-5 bottom-5 ">Upload New Photo</button>
-            </a>
+    <div class="max-w-lg mx-auto  p-8 rounded-lg shadow-lg my-5">
+        <div class="inline-block">
+            <h1 class="text-2xl font-bold mb-4 inline-block">Profile</h1>
+            <img src="{{ profile_form.instance.profile_picture.url }}" alt="Profile Picture" class="rounded-full h-8 w-8 mx-auto mb-2 inline-block">
         </div>
-    </div>
-    <br><br><br>
-    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4">Other Actions:</h2>
-        <div class="mb-4">
-            <a href="{% url 'app:password_change' %}"">
-                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change Password</button>
-            </a>
-            <a href="{% url 'auth_password_change' %}"">
-                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Delete Account</button>
-            </a>
-        </div>
-    </div>
-</div>
-
-<div class="container mx-auto mt-5">
-    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-4">Your Details</h2>
+        
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username</label>
-                <input type="text" name="username" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ user.username }}">
+                <label class="block text-gray-700 text-m font-bold mb-2" for="username">Username</label>
+                <input type="text" name="username" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.user.username }}">
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
-                <input type="email" name="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ user.email }}">
+                <label class="block text-gray-700 text-m font-bold mb-2" for="email">Email</label>
+                <input type="email" name="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.user.email }}">
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="first_name">First Name</label>
-                <input type="text" name="first_name" id="first_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ user.first_name }}">
+                <label class="block text-gray-700 text-m font-bold mb-2" for="first_name">First Name</label>
+                <input type="text" name="first_name" id="first_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.user.first_name }}">
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="last_name">Last Name</label>
-                <input type="text" name="last_name" id="last_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ user.last_name }}">
+                <label class="block text-gray-700 text-m font-bold mb-2" for="last_name">Last Name</label>
+                <input type="text" name="last_name" id="last_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.user.last_name }}">
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="date_of_birth">Date of Birth</label>
+                <label class="block text-gray-700 text-m font-bold mb-2" for="date_of_birth">Date of Birth</label>
                 <input type="date" name="date_of_birth" id="date_of_birth" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.date_of_birth|date:'Y-m-d' }}">
+            </div>
+            <div class="mb-4">    
+                <label class="block text-gray-700 text-m font-bold mb-2" for="profile_picture">Profile Picture</label>
+                <input type="file" name="profile_picture" id="profile_picture" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"  value="{{ profile_form.instance.profile_picture }}">
             </div>
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save Changes</button>
         </form>
     </div>
-</div>
-
+    <div class="max-w-lg mx-auto p-8 rounded-lg shadow-lg my-5">
+        <h2 class="text-2xl font-bold mb-4">Other Actions:</h2>
+        <div class="mb-4">
+            <a href="{% url 'app:password_change' %}">
+                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change Password</button>
+            </a>
+            <a href="{% url 'auth_password_change' %}">
+                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Delete Account</button>
+            </a>
+        </div>
+    </div>
 {% endblock %}

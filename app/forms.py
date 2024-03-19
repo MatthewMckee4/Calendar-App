@@ -38,6 +38,7 @@ class UserProfileForm(forms.ModelForm):
     last_name = forms.CharField(max_length=30, required=False, label="Last Name")
     email = forms.EmailField(required=True, label="Email")
     date_of_birth = forms.DateField(required=False, label="Date of Birth")
+    profile_picture = forms.ImageField(required=False, label="Profile Picture")
 
     class Meta:
         model = UserProfile
@@ -47,23 +48,21 @@ class UserProfileForm(forms.ModelForm):
             "last_name",
             "email",
             "date_of_birth",
+            "profile_picture",
         ]
 
     def save(self, commit=True):
-        # Save UserProfile fields
         user_profile = super().save(commit=False)
-        if commit:
-            user_profile.save()
-
-        # Update related User fields
         user = user_profile.user
         user.username = self.cleaned_data.get("username")
         user.first_name = self.cleaned_data.get("first_name")
         user.last_name = self.cleaned_data.get("last_name")
         user.email = self.cleaned_data.get("email")
         user.date_of_birth = self.cleaned_data.get("date_of_birth")
+        user.profile_picture = self.cleaned_data.get("profile_picture")
 
         if commit:
+            user_profile.save()
             user.save()
 
         return user_profile

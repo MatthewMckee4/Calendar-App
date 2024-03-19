@@ -1,13 +1,21 @@
 from __future__ import annotations
+import os
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 
 
+def user_filename(instance, filename):
+    ext = filename.split(".")[-1]
+    user_id = instance.user.id
+    filename = f"user_{user_id}.{ext}"
+    return os.path.join("profile_pictures", filename)
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    profile_picture_url = models.CharField(max_length=9000, null=True, blank=True)
+    profile_picture = models.ImageField(upload_to=user_filename, default="default.jpg")
 
     def __str__(self):
         return self.user.username

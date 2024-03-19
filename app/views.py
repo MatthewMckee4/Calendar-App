@@ -19,7 +19,7 @@ APP_TEMPLATE_DIR = "app/"
 
 def index(request):
     calendar_list = Calendar.objects.all()
-    event_list = Event.objects.all().order_by('start_date_time')
+    event_list = Event.objects.all().order_by("start_date_time")
 
     today_date = date.today()
     monday = today_date - timedelta(days=today_date.weekday())
@@ -31,7 +31,9 @@ def index(request):
     sunday = monday + timedelta(days=6)
 
     week_days = [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
-    events_this_week = event_list.filter(start_date_time__gte=monday, start_date_time__lte=sunday + timedelta(days=1))
+    events_this_week = event_list.filter(
+        start_date_time__gte=monday, start_date_time__lte=sunday + timedelta(days=1)
+    )
 
     events_by_day = {}
     for day in week_days:
@@ -41,7 +43,11 @@ def index(request):
         event_day = event.start_date_time.date()
         events_by_day[event_day].append(event)
 
-    next_event = Event.objects.filter(start_date_time__gte=timezone.now()).order_by('start_date_time').first()
+    next_event = (
+        Event.objects.filter(start_date_time__gte=timezone.now())
+        .order_by("start_date_time")
+        .first()
+    )
     if next_event:
         time_difference = next_event.start_date_time - timezone.now()
         hours_until_next_event = time_difference.seconds // 3600
@@ -66,9 +72,10 @@ def index(request):
         "events_this_week": events_this_week,
         "next_event": next_event,
         "hours_until_next_event": hours_until_next_event,
-        "minutes_until_next_event": minutes_until_next_event
+        "minutes_until_next_event": minutes_until_next_event,
     }
     return render(request, f"{APP_TEMPLATE_DIR}index.html", context=context_dict)
+
 
 def register(request):
     if request.method == "POST":
@@ -108,16 +115,19 @@ def user_login(request):
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect(reverse("app:index"))
-            else:
-                try:
-                    user_exists = User.objects.get(username=username)
+            user_profile = None
+            try:
+                user_profile = UserProfile.objects.get(user__username=username)
+            except UserProfile.DoesNotExist:
+                messages.error(request, "Username does not exist.")
+
+            if user_profile is not None:
+                user = authenticate(request, username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    return redirect(reverse("app:index"))
+                else:
                     messages.error(request, "Incorrect password. Please try again.")
-                except User.DoesNotExist:
-                    messages.error(request, "Username does not exist.")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -133,23 +143,15 @@ def profile(request):
     user_profile, created = UserProfile.objects.get_or_create(user=user)
 
     if request.method == "POST":
-        profile_form = UserProfileForm(request.POST, instance=user_profile)
+        profile_form = UserProfileForm(
+            request.POST, request.FILES, instance=user_profile
+        )
 
         if profile_form.is_valid():
             profile_form.save()
-            return redirect(reverse("app:profile"))
-
+            return redirect("app:profile")
     else:
-        # Pass both User instance and UserProfile instance to the form
-        profile_form = UserProfileForm(
-            instance=user_profile,
-            initial={
-                "username": user.username,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
-            },
-        )
+        profile_form = UserProfileForm(instance=user_profile)
 
     return render(
         request,
@@ -234,16 +236,24 @@ def events(request):
 
 @login_required
 def notifications(request):
-    #it will now delete all events when the event has ended
+    # it will now delete all events when the event has ended
     current_datetime = timezone.now()
-    event_list = Event.objects.filter(end_date_time__gte=current_datetime).order_by('start_date_time')
+    event_list = Event.objects.filter(end_date_time__gte=current_datetime).order_by(
+        "start_date_time"
+    )
     event_details = None
-    event_id = request.GET.get('event_id')
-    search_query = request.GET.get('search-bar', '')
+    event_id = request.GET.get("event_id")
+    search_query = request.GET.get("search-bar", "")
     if search_query:
-        event_list = Event.objects.filter(end_date_time__gte=current_datetime).filter(description__icontains=search_query).order_by('start_date_time')
+        event_list = (
+            Event.objects.filter(end_date_time__gte=current_datetime)
+            .filter(description__icontains=search_query)
+            .order_by("start_date_time")
+        )
     else:
-        event_list = Event.objects.filter(end_date_time__gte=current_datetime).order_by('start_date_time')
+        event_list = Event.objects.filter(end_date_time__gte=current_datetime).order_by(
+            "start_date_time"
+        )
     if event_id:
         event_details = get_object_or_404(Event, id=event_id)
     context_dict = {
