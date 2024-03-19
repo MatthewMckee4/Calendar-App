@@ -8,7 +8,9 @@
     <div class="max-w-lg mx-auto  p-8 rounded-lg shadow-lg my-5">
         <div class="inline-block">
             <h1 class="text-2xl font-bold mb-4 inline-block">Profile</h1>
+            {% if profile_form.instance.profile_picture %}
             <img src="{{ profile_form.instance.profile_picture.url }}" alt="Profile Picture" class="rounded-full h-8 w-8 mx-auto mb-2 inline-block">
+            {% endif %}
         </div>
         
         <form method="post" enctype="multipart/form-data">
@@ -35,7 +37,7 @@
             </div>
             <div class="mb-4">    
                 <label class="block text-gray-700 text-m font-bold mb-2" for="profile_picture">Profile Picture</label>
-                <input type="file" name="profile_picture" id="profile_picture" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"  value="{{ profile_form.instance.profile_picture }}">
+                <input type="file" name="profile_picture" id="profile_picture"  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"  value="{{ profile_form.instance.profile_picture }}">
             </div>
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save Changes</button>
         </form>

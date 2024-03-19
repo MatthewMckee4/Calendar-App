@@ -41,6 +41,13 @@
             <label for="id_profile_picture" class="block text-gray-700 text-m font-bold mb-2">Profile Picture</label>
             <input type="file" id="id_profile_picture" name="profile_picture" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
+        {% if errors %}
+            <ul>
+                {% for error in errors %}
+                    <li class="text-red-500">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Register</button>
     </form>
 </div>

@@ -5,11 +5,17 @@ from .models import Event
 
 
 class UserRegistrationForm(forms.ModelForm):
+    username = forms.CharField(max_length=150, required=True, label="Username")
+    first_name = forms.CharField(max_length=30, required=False, label="First Name")
+    last_name = forms.CharField(max_length=30, required=False, label="Last Name")
+    email = forms.EmailField(required=True, label="Email")
+    date_of_birth = forms.DateField(required=False, label="Date of Birth")
+    profile_picture = forms.ImageField(required=False, label="Profile Picture")
     password = forms.CharField(widget=forms.PasswordInput)
     confirm_password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
-        model = User
+        model = UserProfile
         fields = [
             "username",
             "email",
@@ -18,6 +24,12 @@ class UserRegistrationForm(forms.ModelForm):
             "password",
             "confirm_password",
         ]
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("This username is already taken.")
+        return username
 
     def clean_confirm_password(self):
         password = self.cleaned_data.get("password")
@@ -28,19 +40,27 @@ class UserRegistrationForm(forms.ModelForm):
         return confirm_password
 
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data["password"])
+        user_profile = super().save(commit=False)
+        user = User.objects.create_user(
+            username=self.cleaned_data.get("username"),
+            email=self.cleaned_data.get("email"),
+            password=self.cleaned_data.get("password"),
+            first_name=self.cleaned_data.get("first_name"),
+            last_name=self.cleaned_data.get("last_name"),
+        )
+        user_profile.user = user
+        user_profile.date_of_birth = self.cleaned_data.get("date_of_birth")
+        profile_picture = self.cleaned_data.get("profile_picture")
+        if profile_picture:
+            user_profile.profile_picture = profile_picture
+        else:
+            user_profile.profile_picture = None
+
         if commit:
             user.save()
-            UserProfile.objects.create(user=user)
-            user.date_of_birth = self.cleaned_data.get("date_of_birth")
-            profile_picture = self.cleaned_data.get("profile_picture")
-            if profile_picture:
-                user.profile_picture = profile_picture
-            else:
-                user.profile_picture = None
+            user_profile.save()
 
-        return user
+        return user_profile
 
 
 class UserProfileForm(forms.ModelForm):

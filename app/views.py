@@ -79,13 +79,15 @@ def index(request):
 
 def register(request):
     if request.method == "POST":
-        user_form = UserRegistrationForm(request.POST)
+        user_form = UserRegistrationForm(request.POST, request.FILES)
         if user_form.is_valid():
             new_user = user_form.save()
-            login(request, new_user)
+            login(request, new_user.user)
             return redirect("app:index")
         else:
-            print(user_form.errors)
+            for field, errors in user_form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         user_form = UserRegistrationForm()
     return render(request, f"{APP_TEMPLATE_DIR}register.html", {"form": user_form})
