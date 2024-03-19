@@ -80,33 +80,15 @@ def index(request):
 def register(request):
     if request.method == "POST":
         user_form = UserRegistrationForm(request.POST)
-        profile_form = UserProfileForm(request.POST)
-        if user_form.is_valid() and profile_form.is_valid():
-            new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data["password"])
-            new_user.save()
-
-            # Create the UserProfile instance
-            profile = profile_form.save(commit=False)
-            profile.user = new_user
-            profile.save()
-
-            # Log in the user
+        if user_form.is_valid():
+            new_user = user_form.save()
             login(request, new_user)
-
             return redirect("app:index")
         else:
-            print("User registration failed")
             print(user_form.errors)
-            print(profile_form.errors)
     else:
         user_form = UserRegistrationForm()
-        profile_form = UserProfileForm()
-    return render(
-        request,
-        f"{APP_TEMPLATE_DIR}register.html",
-        {"user_form": user_form, "profile_form": profile_form},
-    )
+    return render(request, f"{APP_TEMPLATE_DIR}register.html", {"form": user_form})
 
 
 def user_login(request):
@@ -180,23 +162,6 @@ def change_password(request):
 
 
 @login_required
-def change_profile_photo(request):
-    context_dict = {}
-    userProfile = UserProfile.objects.get(user=request.user)
-    profile_form = UserProfileForm(request.POST, request.FILES, instance=userProfile)
-    if profile_form.is_valid():
-        profile_form.save()
-        return redirect(reverse("app:profile"))
-    else:
-        profile_form = UserProfileForm(instance=userProfile)
-
-    context_dict["profile_form"] = profile_form
-    return render(
-        request, f"{APP_TEMPLATE_DIR}profile_change.html", context=context_dict
-    )
-
-
-@login_required
 def logout_user(request):
     logout(request)
     return redirect(reverse("app:index"))
@@ -262,3 +227,13 @@ def notifications(request):
         "search_query": search_query,
     }
     return render(request, f"{APP_TEMPLATE_DIR}notifications.html", context_dict)
+
+
+@login_required
+def delete_account(request):
+    if request.method == "POST":
+        request.user.delete()
+        logout(request)
+        return redirect("app:index")
+
+    return render(request, f"{APP_TEMPLATE_DIR}delete_account.html")

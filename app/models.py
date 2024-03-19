@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 
 
-def user_filename(instance, filename):
+def user_filename(instance: UserProfile, filename: str):
     ext = filename.split(".")[-1]
     user_id = instance.user.id
     filename = f"user_{user_id}.{ext}"
@@ -25,8 +25,9 @@ class Event(models.Model):
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="owned_events"
     )
+    name = models.CharField(max_length=64)
     attendees = models.ManyToManyField(User, related_name="attended_events")
-    description = models.CharField(max_length=512)
+    description = models.CharField(max_length=512, blank=True)
     start_date_time = models.DateTimeField(default=datetime.now)
     end_date_time = models.DateTimeField(default=datetime.now)
     location_latitude = models.FloatField(null=True, blank=True)
