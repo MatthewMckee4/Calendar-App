@@ -176,26 +176,24 @@ def calendars(request):
 
 @login_required
 def create_event(request):
+    user = request.user
     if request.method == "POST":
-        form = EventForm(request.POST)
+        form = EventForm(request.POST, user=user)
         if form.is_valid():
             form.save()
-            return redirect("app:events")
+            return redirect("app:index")
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
-        form = EventForm()
-
-    search_q = request.GET.get("search", "")
-    if search_q:
-        events = Event.objects.filter(title__icontains=search_q)
-    else:
-        events = Event.objects.all()
+        form = EventForm(user=user)
 
     return render(
         request,
         f"{APP_TEMPLATE_DIR}create_event.html",
         {
             "form": form,
-            "events": events,
             "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
         },
     )

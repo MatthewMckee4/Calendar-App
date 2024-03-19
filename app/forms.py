@@ -91,7 +91,6 @@ class UserProfileForm(forms.ModelForm):
         user.email = self.cleaned_data.get("email")
         user.date_of_birth = self.cleaned_data.get("date_of_birth")
         profile_picture = self.cleaned_data.get("profile_picture")
-        print(profile_picture)
         if profile_picture:
             user.profile_picture = profile_picture
         else:
@@ -114,35 +113,17 @@ class EventForm(forms.ModelForm):
         self.user = kwargs.pop("user", None)
         super(EventForm, self).__init__(*args, **kwargs)
         if self.user:
-            self.fields["owner"].initial = self.user
-            self.fields["owner"].widget = forms.HiddenInput()
+            del self.fields["owner"]
+            self.instance.owner = self.user
 
-    attendees = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
-        widget=forms.SelectMultiple(attrs={"class": "select2"}),
-    )
+    attendees = forms.ModelMultipleChoiceField(queryset=UserProfile.objects.all())
 
-    location = forms.CharField(
-        max_length=255, widget=forms.TextInput(attrs={"id": "pac-input"})
-    )
-    location_latitude = forms.FloatField(widget=forms.HiddenInput())
-    location_longitude = forms.FloatField(widget=forms.HiddenInput())
+    location_latitude = forms.FloatField()
+    location_longitude = forms.FloatField()
+    start_date_time = forms.DateTimeField()
+    end_date_time = forms.DateTimeField()
+    description = forms.CharField(max_length=512, required=False)
 
     class Meta:
         model = Event
         fields = "__all__"
-        widgets = {
-            "start_date_time": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "end_date_time": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "description": forms.Textarea(attrs={"cols": 20, "rows": 1}),
-        }
-
-    def save(self, commit=True):
-        instance = super(EventForm, self).save(commit=False)
-        instance.owner = self.user
-        instance.location_latitude = self.cleaned_data["location_latitude"]
-        instance.location_longitude = self.cleaned_data["location_longitude"]
-        if commit:
-            instance.save()
-            self.save_m2m()
-        return instance

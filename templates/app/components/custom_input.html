@@ -1,4 +1,8 @@
-<div class="mb-4">
+{% if hidden %}
+<div class="mb-4 hidden">
+{% else %}
+<div class="mb-4 {{ div_class }}">
+{% endif %}
     <label for="{{ id }}" class="block text-gray-700 text-m font-bold mb-2">{{ name }}</label>
-    <input type="{{ type }}" id="{{ id }}" name="{{ id }}" value="{{ value }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" {% if required %}required{% endif %}>
+    <input type="{{ type }}" id="{{ id }}" name="{{ id }}" value="{{ value }}" placeholder="{{placeholder}}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ input_class }}" {% if required %}required{% endif %}>
 </div>
