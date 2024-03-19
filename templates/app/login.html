@@ -1,31 +1,17 @@
 {% extends 'app/base.html' %}
-
+{% load template_tags %}
 {% block title %}
     Login
 {% endblock %}
 
 {% block content %}
 <div class="max-w-lg mx-auto p-8 rounded-lg shadow-lg my-5">
-    <form method="post" class="max-w-lg mx-auto">
+    <form method="post" >
         {% csrf_token %}
-        <div class="my-2">
-            <label for="id_username" class="block text-gray-700 text-m font-bold mb-2">Username:</label>
-            <input type="text" id="id_username" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-        </div>
-        <div class="my-2">
-            <label for="id_password" class="block text-gray-700 text-m font-bold mb-2">Password:</label>
-            <input type="password" id="id_password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-        </div>
-        <div class="my-2">
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li class="text-red-500">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        </div>
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Login</button>
+        {% custom_input "Username" "username" "text" required="True" %}
+        {% custom_input "Password" "password" "password" required="True" %}
+        {% error_messages messages %}
+        {% custom_button "Login" "submit" "bg-blue-500 hover:bg-blue-700" %}
         <a class="hover:text-indigo-700 ml-2" href={% url 'app:register' %}>Register now!</a> </p>
     </form>
 </div>

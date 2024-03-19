@@ -1,55 +1,38 @@
 {% extends 'app/base.html' %}
-
+{% load template_tags %}
 {% block title %}
     Profile
 {% endblock %}
 
 {% block content %}
-    <div class="max-w-lg mx-auto  p-8 rounded-lg shadow-lg my-5">
+    <div class="max-w-lg mx-auto p-8 rounded-lg shadow-lg my-5">
         <div class="inline-block">
             <h1 class="text-2xl font-bold mb-4 inline-block">Profile</h1>
             {% if profile_form.instance.profile_picture %}
-            <img src="{{ profile_form.instance.profile_picture.url }}" alt="Profile Picture" class="rounded-full h-8 w-8 mx-auto mb-2 inline-block">
+                <img src="{{ profile_form.instance.profile_picture.url }}" alt="Profile Picture" class="rounded-full h-8 w-8 mx-auto mb-2 inline-block">
             {% endif %}
         </div>
         
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="mb-4">
-                <label class="block text-gray-700 text-m font-bold mb-2" for="username">Username</label>
-                <input type="text" name="username" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.user.username }}">
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-700 text-m font-bold mb-2" for="email">Email</label>
-                <input type="email" name="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.user.email }}">
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-700 text-m font-bold mb-2" for="first_name">First Name</label>
-                <input type="text" name="first_name" id="first_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.user.first_name }}">
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-700 text-m font-bold mb-2" for="last_name">Last Name</label>
-                <input type="text" name="last_name" id="last_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.user.last_name }}">
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-700 text-m font-bold mb-2" for="date_of_birth">Date of Birth</label>
-                <input type="date" name="date_of_birth" id="date_of_birth" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ profile_form.instance.date_of_birth|date:'Y-m-d' }}">
-            </div>
-            <div class="mb-4">    
-                <label class="block text-gray-700 text-m font-bold mb-2" for="profile_picture">Profile Picture</label>
-                <input type="file" name="profile_picture" id="profile_picture"  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"  value="{{ profile_form.instance.profile_picture }}">
-            </div>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save Changes</button>
+            {% custom_input "Username" "username" "text" required="True" value=profile_form.instance.user.username %}
+            {% custom_input "Email" "email" "email" required="True" value=profile_form.instance.user.email %}
+            {% custom_input "First Name" "first_name" "text" required="True" value=profile_form.instance.user.first_name %}
+            {% custom_input "Last Name" "last_name" "text" required="True" value=profile_form.instance.user.last_name %}
+            {% custom_input "Date of Birth" "date_of_birth" "date"  value=profile_form.instance.date_of_birth|date:'Y-m-d' %}
+            {% custom_input "Profile Picture" "profile_picture" "file" value=profile_form.instance.profile_picture %}
+            
+            {% custom_button "Update" "submit" "bg-blue-500 hover:bg-blue-700" %}
         </form>
     </div>
     <div class="max-w-lg mx-auto p-8 rounded-lg shadow-lg my-5">
         <h2 class="text-2xl font-bold mb-4">Other Actions:</h2>
         <div class="mb-4">
             <a href="{% url 'app:password_change' %}">
-                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Change Password</button>
+                {% custom_button "Change Password" "button" "bg-blue-500 hover:bg-blue-700" %}
             </a>
             <a href="{% url 'app:delete_account' %}">
-                <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Delete Account</button>
+                {% custom_button "Delete Account" "button" "bg-red-500 hover:bg-red-700" %}
             </a>
         </div>
     </div>

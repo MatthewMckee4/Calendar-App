@@ -1,0 +1,52 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load template_tags %}
+
+{% block title %}
+    Events
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="max-w-xl mx-auto p-8 rounded-lg shadow-lg my-5">
+    <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
+    <form class="w-full max-w-lg" method="post">
+        {% csrf_token %}
+        {% custom_input "Event Name" "name" "text" required="True" %}
+        {% custom_textarea "Description" "description" required="True" %}
+        <div id="map" style="height: 400px;"></div>
+        {% custom_input "Latitude" "location_latitude" "text" %}
+        {% custom_input "Longitude" "location_longitude" "text" %}
+        {% custom_input "Start Time" "start_date_time" "datetime-local" %}
+        {% custom_input "End Time" "end_date_time" "datetime-local" %}
+        {% custom_input "Event Owner" "owner" "text" %}
+        {% custom_input "Attendees" "attendees" "text" %}
+        <div class="mb-4">
+            <label for="recurring" class="block text-gray-700 text-m font-bold mb-2">Repeat this event</label>
+            <input type="checkbox" id="recurring" name="recurring" value="recurring">
+        </div>
+        <div class="mb-4">
+            <label for="recurring_frequency" class="block text-gray-700 text-m font-bold mb-2">Repeat frequency</label>
+            {{ form.recurring_frequency }}
+        </div>
+        {% custom_button "Create Event" "submit" "bg-blue-500 hover:bg-blue-700" %}
+    </form>
+</div>
+<script>
+    function initMap() {
+        let uni = {lat: 55.873, lng: -4.289 }
+        let map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 6,
+            center: uni
+        });
+        let marker = new google.maps.Marker({
+            position: uni,
+            map: map
+        });
+}
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap"></script>
+{% endblock %}

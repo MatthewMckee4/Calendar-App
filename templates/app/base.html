@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load static %}
+{% load static %} 
 
 <html>
 <head>
@@ -16,7 +16,7 @@
                 <a class="text-white font-bold" href={% url 'app:index' %}>Home</a>
                 {% if user.is_authenticated %}
                     <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:calendars' %}>My Calendars</a>
-                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:events' %}>Create Event</a>
+                    <a class="text-gray-300 ml-4 hover:text-white" href={% url 'app:create_event' %}>Create Event</a>
                 {% endif %}
             </div>
             <div class="flex">

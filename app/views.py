@@ -175,7 +175,7 @@ def calendars(request):
 
 
 @login_required
-def events(request):
+def create_event(request):
     if request.method == "POST":
         form = EventForm(request.POST)
         if form.is_valid():
@@ -192,7 +192,7 @@ def events(request):
 
     return render(
         request,
-        f"{APP_TEMPLATE_DIR}events.html",
+        f"{APP_TEMPLATE_DIR}create_event.html",
         {
             "form": form,
             "events": events,
