@@ -11,8 +11,8 @@
 <script src="{% static 'js/reverseGeocode.js' %}" data-api-key="{{ google_maps_api_key }}" async defer></script>
 
 
-    <div class="flex">
-    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="max-width: 100%;">
+<div>
+    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" >
         <div class="container mx-auto mt-5">
             <form class="form-inline my-2 my-lg-0" action="" method="get">
                 {% csrf_token %}
@@ -50,80 +50,66 @@
             {% endif %}
         </div>
     </div>
-    <div class="bg-gray-200 p-4 rounded shadow-md ml-2" style="width: 100%;">
-        <div class="container mx-auto">
-            <h2 class="text-3xl font-bold mb-2 ml-4">Create an Event</h2>
-            <form class="w-full max-w-lg" method="post">
-                {% csrf_token %}      
-                <div class="flex items-start space-x-4 mb-4">
-                    <div class="flex flex-col space-y-4">
-                        <div class="flex items-center space-x-2">
-                            <label for="name" class="block text-sm font-medium text-gray-700">Event Name:</label>
-                            <div>
-                                {{ form.name }}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
-                            <div>
-                                {{ form.description }}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <label for="location_latitude" class="block text-sm font-medium text-gray-700">Latitude:</label>
-                            <div>
-                                {{ form.location_latitude }}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <label for="location_longitude" class="block text-sm font-medium text-gray-700">Longitude:</label>
-                            <div>
-                                {{ form.location_longitude }}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <label for="start_date_time" class="block text-sm font-medium text-gray-700">Start Time:</label>
-                            <div>
-                                {{ form.start_date_time }}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <label for="end_date_time" class="block text-sm font-medium text-gray-700">End Time:</label>
-                            <div>
-                                {{ form.end_date_time }}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <label for="owner" class="block text-sm font-medium text-gray-700">Event Owner:</label>
-                            <div>
-                                {{ form.owner }}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <label for="attendees" class="block text-sm font-medium text-gray-700">Attendees:</label>
-                            <div>
-                                {{ form.attendees }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col justify-start">
-                        <label for="recurring" class="block text-sm font-medium text-gray-700">Repeat this event:</label>
-                        <div>
-                            {{ form.recurring }}
-                        </div>
-                    </div>
-                    <div class="flex flex-col justify-start w-32">
-                        <label for="recurring_frequency" class="block text-sm font-medium text-gray-700">Repeat frequency:</label>
-                        <div>
-                            {{ form.recurring_frequency }}
-                        </div>
-                    </div>
+    <div class="max-w-xl mx-auto p-8 rounded-lg shadow-lg my-5">
+        <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
+        <form class="w-full max-w-lg" method="post">
+            {% csrf_token %}      
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 text-m font-bold mb-2">Event Name</label>
+                <input type="text" id="id_username" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-gray-700 text-m font-bold mb-2">Description</label>
+                <textarea id="id_description" name="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="location_latitude" class="block text-gray-700 text-m font-bold mb-2">Latitude</label>
+                <div>
+                    {{ form.location_latitude }}
                 </div>
-                
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Create Event</button>
-            </form>
-        </div>
+            </div>
+            <div class="mb-4">
+                <label for="location_longitude" class="block text-gray-700 text-m font-bold mb-2">Longitude</label>
+                <div>
+                    {{ form.location_longitude }}
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="start_date_time" class="block text-gray-700 text-m font-bold mb-2">Start Time</label>
+                <div>
+                    {{ form.start_date_time }}
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="end_date_time" class="block text-gray-700 text-m font-bold mb-2">End Time</label>
+                <div>
+                    {{ form.end_date_time }}
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="owner" class="block text-gray-700 text-m font-bold mb-2">Event Owner</label>
+                <div>
+                    {{ form.owner }}
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="attendees" class="block text-gray-700 text-m font-bold mb-2">Attendees</label>
+                <div>
+                    {{ form.attendees }}
+            </div>
+            </div>
+            <div class="mb-4">
+                <label for="recurring" class="block text-gray-700 text-m font-bold mb-2">Repeat this event</label>
+                <input type="checkbox" id="recurring" name="recurring" value="recurring">
+            </div>
+                <div class="mb-4">
+                <label for="recurring_frequency" class="block text-gray-700 text-m font-bold mb-2">Repeat frequency</label>
+                <div>
+                    {{ form.recurring_frequency }}
+                </div>
+            </div>
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">Create Event</button>
+        </form>
     </div>
-
 </div>
 {% endblock %}
