@@ -1,9 +1,12 @@
 {% extends 'app/base.html' %}
+{% load static %}
 
 {% block title %}
     Index Page
 {% endblock %}
 {% block content %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
+<script src="{% static 'js/reverseGeocode.js' %}"></script>
 <div class="mx-auto mt-5 flex justify-center">
     {% if user.is_authenticated %}
         {% if flag %}
@@ -91,9 +94,14 @@
                         <p>Your next event is in {{ hours_until_next_event }} hours and {{ minutes_until_next_event }} minutes</p>
                         <div class="bg-gray-300 p-4 rounded shadow-md max-w-md mb-2">
                             <p>Title: {{next_event.description}}</p>
-                            <p>Location: {{ next_event.location_latitude }}, {{ next_event.location_longitude }}</p>
+                            <p id="event-location">Location: Loading...</p>
                             <p>Time, Date: {{next_event.start_date_time.time}}, {{next_event.start_date_time.date}}</p>
                         </div>
+                        <script>
+                            window.onload = function() {
+                                updateLocation({{ next_event.location_latitude }}, {{ next_event.location_longitude }}, 'event-location');
+                            };
+                        </script>
                     </div>
                 </div>
             </div>
