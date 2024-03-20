@@ -91,11 +91,6 @@
                         <p>Click <a class="hover:text-indigo-700" href="{% url 'app:create_event' %}">here</a> to view all! </p>
                         {% user_profile_event_list user.userprofile "small_event_card" %}
                     </div>
-                    <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
-                        <h2 class="text-2xl font-semibold mb-2">Next Event</h2>
-                        <p>Your next event is in {{ hours_until_next_event }} hours and {{ minutes_until_next_event }} minutes</p>
-                        {% small_event_card next_event%}
-                    </div>
                 </div>
             </div>
             

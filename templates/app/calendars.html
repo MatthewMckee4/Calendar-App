@@ -1,43 +1,414 @@
-{% extends 'app/base.html' %}
-{% block title %}
-My calendar
-{% endblock %}
+{% extends 'app/base.html' %} 
+{% load static %} 
+{% load template_tags %} 
+{%block title %} 
+My calendar 
+{% endblock %} 
 {% block content %}
-<head>
-    <meta charset="utf-8">
-    <title>Calendar</title>
-    <link rel="stylesheet" href="/static/css/calendar.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<div class="wrapper">
-    <header>
-        <h1 class="text-3xl font-bold">{{user.username}}'s Calendar</h1>
-    </header>
-    <div class="calendar-header">
-        <div class="month-navigation">
-            <span id="prev-month" class="material-symbols-rounded">&lt;</span>
-            <span class="current-date"></span>
-            <span id="next-month" class="material-symbols-rounded">&gt;</span>
+<script
+    defer
+    src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js"
+></script>
+<div>
+    <div class="antialiased sans-serif bg-gray-100 h-screen">
+        <div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
+            <div class="container mx-auto px-4 py-2 md:py-24">
+                <div
+                    class="bg-white mx-auto p-8 rounded-lg shadow-lg my-5 overflow-y-auto max-h-screen"
+                >
+                    <div class="flex items-center justify-between py-2 px-6">
+                        <div>
+                            <span
+                                x-text="MONTH_NAMES[month]"
+                                class="text-lg font-bold text-gray-800"
+                            ></span>
+                            <span
+                                x-text="year"
+                                class="ml-1 text-lg text-gray-600 font-normal"
+                            ></span>
+                        </div>
+                        <div
+                            class="border rounded-lg px-1"
+                            style="padding-top: 2px"
+                        >
+                            <button
+                                type="button"
+                                class="leading-none rounded-lg transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-200 p-1 items-center"
+                                @click="decrementMonth();getNoOfDays(); "
+                            >
+                                <svg
+                                    class="h-6 w-6 text-gray-500 inline-flex leading-none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        d="M15 19l-7-7 7-7"
+                                    />
+                                </svg>
+                            </button>
+                            <div class="border-r inline-flex h-6"></div>
+                            <button
+                                type="button"
+                                class="leading-none rounded-lg transition ease-in-out duration-100 inline-flex items-center cursor-pointer hover:bg-gray-200 p-1"
+                                @click="incrementMonth();getNoOfDays(); "
+                            >
+                                <svg
+                                    class="h-6 w-6 text-gray-500 inline-flex leading-none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        d="M9 5l7 7-7 7"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="-mx-1 -mb-1">
+                        <div
+                            class="flex flex-wrap"
+                            style="margin-bottom: -40px"
+                        >
+                            <template x-for="(day, index) in DAYS" :key="index">
+                                <div style="width: 14.26%" class="px-2 py-2">
+                                    <div
+                                        x-text="day"
+                                        class="text-gray-600 text-sm uppercase tracking-wide font-bold text-center"
+                                    ></div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="flex flex-wrap border-t border-l">
+                            <template x-for="blankday in blankdays">
+                                <div
+                                    style="width: 14.28%; height: 120px"
+                                    class="text-center border-r border-b px-4 pt-2"
+                                ></div>
+                            </template>
+                            <template
+                                x-for="(date, dateIndex) in no_of_days"
+                                :key="dateIndex"
+                            >
+                                <div
+                                    style="width: 14.28%; height: 120px"
+                                    class="px-4 pt-2 border-r border-b relative"
+                                >
+                                    <div
+                                        @click="showCreateEventModal()"
+                                        x-text="date"
+                                        class="inline-flex w-7 h-7 items-center justify-center cursor-pointer text-center leading-none rounded-full transition ease-in-out duration-100"
+                                        :class="{'bg-blue-500 text-white': isToday(date) == true, 'text-gray-700 hover:bg-blue-200': isToday(date) == false }"
+                                    ></div>
+                                    <div
+                                        style="height: 80px"
+                                        class="overflow-y-auto mt-1"
+                                    >
+                                        <div
+                                            @click="showEventCard(getEvents(date))"
+                                            class="absolute top-0 right-0 mt-2 mr-2 inline-flex items-center justify-center rounded-full text-sm w-7 h-7 bg-gray-700 text-white leading-none cursor-pointer"
+                                            x-show="events.filter(e => new Date(e.start_date_time).toDateString() === new Date(year, month, date).toDateString()).length"
+                                            x-text="events.filter(e => new Date(e.start_date_time).toDateString() === new Date(year, month, date).toDateString()).length"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </template>
+                            <div
+                                x-show.transition.opacity="openEventCard"
+                                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+                            >
+                                <div class="bg-white p-4 rounded shadow-lg w-60">
+                                    <h2 class="text-lg font-semibold mb-2">
+                                        Events
+                                    </h2>
+                                    <template x-for="event in getCurrentEvents()">
+                                        <a :href="'/app/event/' + event.id" class="flex items-baseline mb-2 border border-gray-300 rounded p-2 hover:bg-gray-100">
+                                            <div class="flex-1" x-text="event.name  "></div>
+                                            <div class="text-gray-600 ml-2" x-text="new Date(event.start_date_time).toLocaleTimeString()"></div>
+                                        </a>
+                                    </template>
+                                    <button
+                                        x-on:click="openEventCard = !openEventCard"
+                                        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                style="background-color: rgba(0, 0, 0, 0.8)"
+                class="fixed z-40 top-0 right-0 left-0 bottom-0 h-full w-full"
+                x-show.transition.opacity="openEventModal"
+            >
+                <div
+                    class="p-4 max-w-4xl mx-auto relative absolute left-0 right-0 overflow-hidden mt-24"
+                >
+                    <div
+                        class="shadow absolute right-0 top-0 w-10 h-10 rounded-full bg-white text-gray-500 hover:text-gray-800 inline-flex items-center justify-center cursor-pointer"
+                        x-on:click="openEventModal = !openEventModal"
+                    >
+                        <svg
+                            class="fill-current w-6 h-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                d="M16.192 6.344L11.949 10.586 7.707 6.344 6.293 7.758 10.535 12 6.293 16.242 7.707 17.656 11.949 13.414 16.192 17.656 17.606 16.242 13.364 12 17.606 7.758z"
+                            />
+                        </svg>
+                    </div>
+
+                    <div class="bg-white mx-auto p-8 rounded-lg shadow-lg my-5">
+                        <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
+                        <form class="w-full" method="post">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {% csrf_token %}
+                                <div>
+                                    {% custom_input "Event Name" "name" "text" required="True" %} 
+                                    {% custom_textarea "Description" "description" required="True" %}
+                                    <div class="mb-4">
+                                        <label
+                                            for="attendees"
+                                            class="block text-gray-700 text-m font-bold mb-2"
+                                            >Attendees</label
+                                        >
+                                        {{ form.attendees }}
+                                    </div>
+                                    <div class="mb-4">
+                                        <label
+                                            for="recurring"
+                                            class="block text-gray-700 text-m font-bold mb-2"
+                                            >Repeat this event</label
+                                        >
+                                        <input
+                                            type="checkbox"
+                                            id="recurring"
+                                            name="recurring"
+                                            value="recurring"
+                                        />
+                                    </div>
+                                    <div class="mb-4">
+                                        <label
+                                            for="recurring_frequency"
+                                            class="block text-gray-700 text-m font-bold mb-2"
+                                            >Repeat frequency</label
+                                        >
+                                        {{ form.recurring_frequency }}
+                                    </div>
+                                </div>
+                                <div>
+                                    {% custom_input "Search for a place" "pac-input" "text" input_class="controls" div_class="search-container"%}
+                                    <div
+                                        id="map"
+                                        style="height: 400px"
+                                        class="mb-4"
+                                    ></div>
+                                    {% custom_input "Latitude" "location_latitude" "text" "55.873" hidden="True" %} 
+                                    {% custom_input "Longitude" "location_longitude" "text" "-4.289" hidden="True" %} 
+                                    {% custom_input "StartTime" "start_date_time" "datetime-local" %}
+                                    {% custom_input "End Time" "end_date_time" "datetime-local" %}
+                                </div>
+                            </div>
+                            {% error_messages messages %}
+                            <div class="flex justify-center">
+                                {% custom_button "Create Event" "submit" "bg-blue-500 hover:bg-blue-700" %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="view-options">
-            <button id="day-view-btn" class="btn">Day View</button>
-            <button id="week-view-btn" class="btn">Week View</button>
-            <button id="month-view-btn" class="btn-active">Month View</button>
-        </div>
-    </div>
-    <div class="calendar">
-        <ul class="weekdays">
-            <li>Monday</li>
-            <li>Tuesday</li>
-            <li>Wednesday</li>
-            <li>Thursday</li>
-            <li>Friday</li>
-            <li>Saturday</li>
-            <li>Sunday</li>
-        </ul>
-        <ul class="days">
-        </ul>
     </div>
 </div>
-<script src="/static/js/calendar.js"></script>
+<script>
+    function initMap() {
+        var uni = {
+            lat: parseFloat(
+                document.getElementById("location_latitude").value
+            ),
+            lng: parseFloat(
+                document.getElementById("location_longitude").value
+            ),
+        };
+        var map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 13,
+            center: uni,
+            mapTypeId: "satellite",
+        });
+
+        var marker = new google.maps.Marker({
+            position: uni,
+            map: map,
+            draggable: true,
+        });
+
+        marker.addListener("dragend", function (event) {
+            document.getElementById("location_latitude").value =
+                event.latLng.lat().toString();
+            document.getElementById("location_longitude").value =
+                event.latLng.lng().toString();
+        });
+
+        var input = document.getElementById("pac-input");
+
+        var searchBox = new google.maps.places.SearchBox(input);
+
+        map.addListener("bounds_changed", function () {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        searchBox.addListener("places_changed", function () {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            marker.setMap(null);
+
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var location = place.geometry.location;
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: place.name,
+                    draggable: true,
+                });
+                map.setCenter(location);
+                document.getElementById("location_latitude").value =
+                    location.lat().toString();
+                document.getElementById("location_longitude").value =
+                    location.lng().toString();
+
+                marker.addListener("dragend", function (event) {
+                    input.value = "";
+                    document.getElementById("location_latitude").value =
+                        event.latLng.lat().toString();
+                    document.getElementById("location_longitude").value =
+                        event.latLng.lng().toString();
+                });
+            });
+        });
+    }
+</script>
+<script
+    async
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initMap"
+></script>
+
+<script>
+    const MONTH_NAMES = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+    const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    function app() {
+        return {
+            month: "",
+            year: "",
+            no_of_days: [],
+            blankdays: [],
+            days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            events: JSON.parse("{{ events | escapejs }}"),
+            openEventModal: false,
+            openEventCard: false,
+            currentEvents: [],
+
+            initDate() {
+                let today = new Date();
+                this.month = today.getMonth();
+                this.year = today.getFullYear();
+                this.datepickerValue = new Date(
+                    this.year,
+                    this.month,
+                    today.getDate()
+                ).toDateString();
+            },
+
+            isToday(date) {
+                const d = new Date(this.year, this.month, date);
+                return new Date().toDateString() === d.toDateString();
+            },
+
+            showCreateEventModal() {
+                this.openEventModal = true;
+            },
+
+            getNoOfDays() {
+                let daysInMonth = new Date(
+                    this.year,
+                    this.month + 1,
+                    0
+                ).getDate();
+
+                let dayOfWeek = new Date(this.year, this.month).getDay();
+                let blankdaysArray = [];
+                for (var i = 1; i <= dayOfWeek; i++) {
+                    blankdaysArray.push(i);
+                }
+
+                let daysArray = [];
+                for (var i = 1; i <= daysInMonth; i++) {
+                    daysArray.push(i);
+                }
+
+                this.blankdays = blankdaysArray;
+                this.no_of_days = daysArray;
+            },
+            showEventCard(events) {
+                this.currentEvents = events;
+                this.openEventCard = true;
+            },
+            getCurrentEvents() {
+                console.log(this.currentEvents);
+                return this.currentEvents;
+            },
+            getEvents(date) {
+                return this.events.filter(
+                    (e) =>
+                        new Date(e.start_date_time).toDateString() ===
+                        new Date(this.year, this.month, date).toDateString()
+                );
+            },
+            incrementMonth() {
+                this.month += 1;
+                if (this.month === 12) {  // If month becomes 12 (December), increment the year
+                    this.year += 1;
+                    this.month = 0;  
+                }
+                getNoOfDays(); 
+            },
+            decrementMonth() {
+                this.month -= 1;
+                if (this.month === -1) { 
+                    this.year -= 1;
+                    this.month = 11;  
+                }
+                
+            },
+        };
+    }
+</script>
 {% endblock%}

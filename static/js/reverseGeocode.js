@@ -1,9 +1,9 @@
 function reverseGeocode(lat, lng, elementId) {
     var geocoder = new google.maps.Geocoder();
-    var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
+    var latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
 
-    geocoder.geocode({'location': latlng}, function(results, status) {
-        if (status === 'OK') {
+    geocoder.geocode({ location: latlng }, function (results, status) {
+        if (status === "OK") {
             if (results[0]) {
                 var placeName = "";
                 for (var i = 0; i < results.length; i++) {
@@ -13,12 +13,15 @@ function reverseGeocode(lat, lng, elementId) {
                     }
                 }
                 placeName = placeName || results[0].formatted_address;
-                document.getElementById(elementId).textContent = 'Location: ' + placeName;
+                document.getElementById(elementId).textContent =
+                    "Location: " + placeName;
             } else {
-                document.getElementById(elementId).textContent = 'Location: No results found';
+                document.getElementById(elementId).textContent =
+                    "Location: No results found";
             }
         } else {
-            document.getElementById(elementId).textContent = 'Location: Geocoder failed due to: ' + status;
+            document.getElementById(elementId).textContent =
+                "Location: Geocoder failed due to: " + status;
         }
     });
 }

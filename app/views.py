@@ -12,6 +12,7 @@ from .models import Event
 from datetime import date, timedelta
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+import json
 
 APP_TEMPLATE_DIR = "app/"
 
@@ -171,7 +172,51 @@ def logout_user(request):
 
 @login_required
 def calendars(request):
-    return render(request, f"{APP_TEMPLATE_DIR}calendars.html")
+    events = Event.objects.all()
+    events = json.dumps(
+        [
+            {
+                "id": event.id,
+                "owner": {
+                    "username": event.owner.user.username,
+                    "id": event.owner.id,
+                    "profile_picture": event.owner.profile_picture.url,
+                },
+                "name": event.name,
+                "start_date_time": event.start_date_time.isoformat(),
+                "end_date_time": event.end_date_time.isoformat(),
+                "location_latitude": event.location_latitude,
+                "location_longitude": event.location_longitude,
+                "description": event.description,
+                "recurring": event.recurring,
+                "recurring_frequency": event.recurring_frequency,
+            }
+            for event in events
+        ]
+    )
+    if request.method == "POST":
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.owner = request.user.userprofile
+            event.save()
+            return redirect("app:index")
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = EventForm()
+
+    return render(
+        request,
+        f"{APP_TEMPLATE_DIR}calendars.html",
+        {
+            "form": form,
+            "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
+            "events": events,
+        },
+    )
 
 
 @login_required
@@ -238,3 +283,20 @@ def delete_account(request):
         return redirect("app:index")
 
     return render(request, f"{APP_TEMPLATE_DIR}delete_account.html")
+
+
+@login_required
+def events(request):
+    user_profile = request.user.userprofile
+    event_list = Event.objects.filter(owner=user_profile).order_by("start_date_time")
+    return render(
+        request,
+        f"{APP_TEMPLATE_DIR}events.html",
+        {"events": event_list},
+    )
+
+
+@login_required
+def event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    return render(request, f"{APP_TEMPLATE_DIR}event.html", {"event": event})

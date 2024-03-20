@@ -1,7 +1,9 @@
 {% extends 'app/base.html' %}
+{% load template_tags %}
 {% block title %}
-Events
+Event {{ event.name }}
 {% endblock %}
 {% block content %}
-
+{{event.name}}
+{{event.description}}
 {% endblock%}

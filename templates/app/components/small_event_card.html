@@ -7,7 +7,7 @@
     <p>Time, Date: {{event.start_date_time.time}}, {{event.start_date_time.date}}</p>
 </div>
 <script>
-        window.onload = function() {
-            updateLocation({{ next_event.location_latitude }}, {{ next_event.location_longitude }}, 'event-location');
-        };
+    window.onload = function() {
+        updateLocation({{ event.location_latitude }}, {{ event.location_longitude }}, 'event-location');
+    };
 </script>
