@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
-from app.forms import UserRegistrationForm
+from app.forms import CalendarForm, UserRegistrationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from app.forms import UserRegistrationForm, LoginForm, UserProfileForm, EventForm
 from app.models import UserProfile, Calendar, Event
+from app.utilities import get_events_json
 from .models import Event
 from datetime import date, timedelta
 from django.shortcuts import get_object_or_404
@@ -173,27 +174,7 @@ def logout_user(request):
 @login_required
 def calendars(request):
     events = Event.objects.all()
-    events = json.dumps(
-        [
-            {
-                "id": event.id,
-                "owner": {
-                    "username": event.owner.user.username,
-                    "id": event.owner.id,
-                    "profile_picture": event.owner.profile_picture.url,
-                },
-                "name": event.name,
-                "start_date_time": event.start_date_time.isoformat(),
-                "end_date_time": event.end_date_time.isoformat(),
-                "location_latitude": event.location_latitude,
-                "location_longitude": event.location_longitude,
-                "description": event.description,
-                "recurring": event.recurring,
-                "recurring_frequency": event.recurring_frequency,
-            }
-            for event in events
-        ]
-    )
+    events = get_events_json(events)
     if request.method == "POST":
         form = EventForm(request.POST)
         if form.is_valid():
@@ -300,3 +281,29 @@ def events(request):
 def event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     return render(request, f"{APP_TEMPLATE_DIR}event.html", {"event": event})
+
+
+@login_required
+def create_calendar(request):
+    if request.method == "POST":
+        form = CalendarForm(request.POST)
+        if form.is_valid():
+            calendar = form.save(commit=False)
+            calendar.user = request.user.userprofile
+            calendar.save()
+            form.save_m2m()
+            return redirect("app:index")
+    else:
+        form = CalendarForm(initial={"events": []})
+    return render(request, f"{APP_TEMPLATE_DIR}create_calendar.html", {"form": form})
+
+
+@login_required
+def calendar(request, calendar_id):
+    calendar = get_object_or_404(Calendar, id=calendar_id)
+    events = get_events_json(calendar.events.all())
+    return render(
+        request,
+        f"{APP_TEMPLATE_DIR}calendar.html",
+        {"calendar": calendar, "events": events},
+    )

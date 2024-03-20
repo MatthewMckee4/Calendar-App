@@ -89,7 +89,7 @@
                         <h2 class="text-2xl font-semibold mb-2">My Events</h2>
                         <p>Create and search for your events</p>
                         <p>Click <a class="hover:text-indigo-700" href="{% url 'app:create_event' %}">here</a> to view all! </p>
-                        {% user_profile_event_list user.userprofile "small_event_card" %}
+                        {% user_profile_event_list user.userprofile %}
                     </div>
                 </div>
             </div>

@@ -52,22 +52,20 @@ def error_messages(messages: List[str]):
 
 
 @register.inclusion_tag("app/components/event_list.html")
-def user_profile_event_list(
-    user_profile: UserProfile, card_type: str = "small_event_card"
-):
-    return event_list(user_profile.events.all(), card_type)
+def user_profile_event_list(user_profile: UserProfile):
+    return event_list(user_profile.events.all())
 
 
 @register.inclusion_tag("app/components/event_list.html")
-def event_list(events: List[Event], card_type: str = "small_event_card"):
-    return {"events": events, "card_type": card_type}
+def event_list(events: List[Event]):
+    return {"events": events}
 
 
-@register.inclusion_tag("app/components/small_event_card.html")
-def small_event_card(event: Event):
+@register.inclusion_tag("app/components/event_card.html")
+def event_card(event: Event):
     return {"event": event, "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY}
 
 
-@register.inclusion_tag("app/components/large_event_card.html")
-def large_event_card(event: Event):
-    return {"event": event}
+@register.inclusion_tag("app/components/create_event_form.html")
+def create_event_form(form):
+    return {"form": form, "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY}

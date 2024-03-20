@@ -1,0 +1,29 @@
+{% extends 'app/base.html' %}
+{% load template_tags %}
+{% block title %}
+Create Calendar
+{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto p-8 rounded-lg shadow-lg my-5">
+    <h2 class="text-2xl font-bold mb-4">Create a Calendar</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% custom_input "Name" "name" "text" required="True" %}
+        {% custom_textarea "Description" "description" required="True" %}
+        <div class="mb-4">
+            <label for="colour" class="block text-sm font-medium text-gray-700">Colour</label>
+            <select id="colour" name="colour" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <option class="bg-blue-500" value="bg-blue-500">Blue</option>
+                <option class="bg-red-500" value="bg-red-500">Red</option>
+                <option class="bg-green-500" value="bg-green-500">Green</option>
+                <option class="bg-yellow-500" value="bg-yellow-500">Yellow</option>
+                <option class="bg-indigo-500" value="bg-indigo-500">Indigo</option>
+                <option class="bg-purple-500" value="bg-purple-500">Purple</option>
+                <option class="bg-pink-500" value="bg-pink-500">Pink</option>
+                <option class="bg-gray-500" value="bg-gray-500">Gray</option>
+            </select>
+        </div>
+        {% custom_button "Create Calendar" "submit" "bg-blue-500 hover:bg-blue-700" %}
+    </form>
+</div>
+{% endblock%}

@@ -1,7 +1,7 @@
 from django import forms
 from app.models import UserProfile
 from django.contrib.auth.models import User
-from .models import Event
+from .models import Event, Calendar
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -120,3 +120,9 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         exclude = ["owner"]
+
+
+class CalendarForm(forms.ModelForm):
+    class Meta:
+        model = Calendar
+        fields = ["name", "description", "colour"]

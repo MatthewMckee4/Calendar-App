@@ -1,7 +1,10 @@
 {% extends 'app/base.html' %}
+{% load template_tags %} 
 {% block title %}
 Events
 {% endblock %}
 {% block content %}
-
+<div class="max-w-6xl mx-auto p-6 my-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {% user_profile_event_list user.userprofile  %}
+</div>
 {% endblock%}

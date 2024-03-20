@@ -1,10 +1,8 @@
 {% load template_tags %}
-<div>
-    {% for event in events %}
-        {% if card_type  == "small_event_card" %}
-        {% small_event_card event %}
-        {% elif card_type  == "large_event_card" %}
-        {% large_event_card event %}
-        {% endif %}
-    {% endfor %}
-</div>
+{% for event in events %}
+<a href="{% url 'app:event' event.id %}">
+    {% event_card event %}
+</a>
+{% endfor %}
+
+

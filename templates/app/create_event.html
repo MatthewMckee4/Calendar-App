@@ -8,33 +8,9 @@
 
 {% block content %}
 
-<div class="max-w-xl mx-auto p-8 rounded-lg shadow-lg my-5">
+<div class="max-w-4xl mx-auto p-8 rounded-lg shadow-lg my-5">
     <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
-    <form class="w-full max-w-lg" method="post">
-        {% csrf_token %}
-        {% custom_input "Event Name" "name" "text" required="True" %}
-        {% custom_textarea "Description" "description" required="True" %}
-        {% custom_input "Search for a place" "pac-input" "text" input_class="controls" div_class="search-container"%}
-        <div id="map" style="height: 400px;" class="mb-4"></div>
-        {% custom_input "Latitude" "location_latitude" "text" "55.873" hidden="True" %}
-        {% custom_input "Longitude" "location_longitude" "text" "-4.289" hidden="True" %}
-        {% custom_input "Start Time" "start_date_time" "datetime-local" %}
-        {% custom_input "End Time" "end_date_time" "datetime-local" %}
-        <div class="mb-4">
-            <label for="attendees" class="block text-gray-700 text-m font-bold mb-2">Attendees</label>
-            {{ form.attendees }}
-        </div>
-        <div class="mb-4">
-            <label for="recurring" class="block text-gray-700 text-m font-bold mb-2">Repeat this event</label>
-            <input type="checkbox" id="recurring" name="recurring" value="recurring">
-        </div>
-        <div class="mb-4">
-            <label for="recurring_frequency" class="block text-gray-700 text-m font-bold mb-2">Repeat frequency</label>
-            {{ form.recurring_frequency }}
-        </div>
-        {% error_messages messages %}
-        {% custom_button "Create Event" "submit" "bg-blue-500 hover:bg-blue-700" %}
-    </form>
+    {% create_event_form form%}
 </div>
 
 

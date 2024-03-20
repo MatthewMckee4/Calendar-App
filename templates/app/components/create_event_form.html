@@ -1,0 +1,135 @@
+{% load template_tags %} 
+<form class="w-full" method="post">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% csrf_token %}
+        <div>
+            {% custom_input "Event Name" "name" "text" required="True" %} 
+            {% custom_textarea "Description" "description" required="True" %}
+            <div class="mb-4">
+                <label
+                    for="attendees"
+                    class="block text-gray-700 text-m font-bold mb-2"
+                    >Attendees</label
+                >
+                {{ form.attendees }}
+            </div>
+            <div class="mb-4">
+                <label
+                    for="recurring"
+                    class="block text-gray-700 text-m font-bold mb-2"
+                    >Repeat this event</label
+                >
+                <input
+                    type="checkbox"
+                    id="recurring"
+                    name="recurring"
+                    value="recurring"
+                />
+            </div>
+            <div class="mb-4">
+                <label
+                    for="recurring_frequency"
+                    class="block text-gray-700 text-m font-bold mb-2"
+                    >Repeat frequency</label
+                >
+                {{ form.recurring_frequency }}
+            </div>
+        </div>
+        <div>
+            {% custom_input "Search for a place" "pac-input" "text" input_class="controls" div_class="search-container"%}
+            <div
+                id="map"
+                style="height: 400px"
+                class="mb-4"
+            ></div>
+            {% custom_input "Latitude" "location_latitude" "text" "55.873" hidden="True" %} 
+            {% custom_input "Longitude" "location_longitude" "text" "-4.289" hidden="True" %} 
+            {% custom_input "StartTime" "start_date_time" "datetime-local" %}
+            {% custom_input "End Time" "end_date_time" "datetime-local" %}
+        </div>
+    </div>
+    {% error_messages messages %}
+    <div class="flex justify-center">
+        {% custom_button "Create Event" "submit" "bg-blue-500 hover:bg-blue-700" %}
+    </div>
+</form>
+<script>
+    function initMap() {
+        var uni = {
+            lat: parseFloat(
+                document.getElementById("location_latitude").value
+            ),
+            lng: parseFloat(
+                document.getElementById("location_longitude").value
+            ),
+        };
+        var map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 13,
+            center: uni,
+            mapTypeId: "satellite",
+        });
+
+        var marker = new google.maps.Marker({
+            position: uni,
+            map: map,
+            draggable: true,
+        });
+
+        marker.addListener("dragend", function (event) {
+            document.getElementById("location_latitude").value =
+                event.latLng.lat().toString();
+            document.getElementById("location_longitude").value =
+                event.latLng.lng().toString();
+        });
+
+        var input = document.getElementById("pac-input");
+
+        var searchBox = new google.maps.places.SearchBox(input);
+
+        map.addListener("bounds_changed", function () {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        searchBox.addListener("places_changed", function () {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            marker.setMap(null);
+
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var location = place.geometry.location;
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: place.name,
+                    draggable: true,
+                });
+                map.setCenter(location);
+                document.getElementById("location_latitude").value =
+                    location.lat().toString();
+                document.getElementById("location_longitude").value =
+                    location.lng().toString();
+
+                marker.addListener("dragend", function (event) {
+                    input.value = "";
+                    document.getElementById("location_latitude").value =
+                        event.latLng.lat().toString();
+                    document.getElementById("location_longitude").value =
+                        event.latLng.lng().toString();
+                });
+            });
+        });
+    }
+</script>
+<script
+    async
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initMap"
+></script>
