@@ -73,6 +73,7 @@ def index(request):
         "next_event": next_event,
         "hours_until_next_event": hours_until_next_event,
         "minutes_until_next_event": minutes_until_next_event,
+        "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
     }
     return render(request, f"{APP_TEMPLATE_DIR}index.html", context=context_dict)
 

@@ -1,23 +1,28 @@
-let reverseGeocode;
+function reverseGeocode(lat, lng, elementId) {
+    var geocoder = new google.maps.Geocoder();
+    var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
 
-document.addEventListener('DOMContentLoaded', function() {
-    reverseGeocode = function(lat, lng, callback) {
-        const geocoder = new google.maps.Geocoder();
-        const location = { lat: parseFloat(lat), lng: parseFloat(lng) };
-
-        geocoder.geocode({ 'location': location }, function(results, status) {
-            if (status === 'OK') {
-                if (results[0]) {
-                    console.log(results[0].formatted_address);
-                    callback(results[0].formatted_address);      
-                } else {
-                    console.error('No results found');
-                    callback('No results found');
+    geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === 'OK') {
+            if (results[0]) {
+                var placeName = "";
+                for (var i = 0; i < results.length; i++) {
+                    if (results[i].types.includes("locality")) {
+                        placeName = results[i].formatted_address;
+                        break;
+                    }
                 }
+                placeName = placeName || results[0].formatted_address;
+                document.getElementById(elementId).textContent = 'Location: ' + placeName;
             } else {
-                console.error('Geocoder failed due to: ' + status);
-                callback('Geocoder failed due to: ' + status);
+                document.getElementById(elementId).textContent = 'Location: No results found';
             }
-        });
-    };
-});
+        } else {
+            document.getElementById(elementId).textContent = 'Location: Geocoder failed due to: ' + status;
+        }
+    });
+}
+
+function updateLocation(lat, lng, elementId) {
+    reverseGeocode(lat, lng, elementId);
+}
