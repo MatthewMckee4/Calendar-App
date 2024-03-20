@@ -66,6 +66,21 @@ def event_card(event: Event):
     return {"event": event, "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY}
 
 
+@register.inclusion_tag("app/components/small_event_card.html")
+def small_event_card(event: Event):
+    return {"event": event}
+
+
 @register.inclusion_tag("app/components/create_event_form.html")
 def create_event_form(form):
     return {"form": form, "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY}
+
+
+@register.inclusion_tag("app/components/calendar_card.html")
+def calendar_card(calendar):
+    return {"calendar": calendar}
+
+
+@register.filter
+def get_value(dictionary: dict, key):
+    return dictionary.get(key)

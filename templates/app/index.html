@@ -6,110 +6,62 @@
     Index Page
 {% endblock %}
 {% block content %}
-<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
-<script src="{% static 'js/reverseGeocode.js' %}"></script>
-<div class="mx-auto mt-5 flex justify-center">
+<div class="max-w-7xl mx-auto p-6 my-3 ">
     {% if user.is_authenticated %}
-        {% if flag %}
-            <div class="flex">
-                <div class="mr-10">
-                    <h1 class="text-3xl font-bold mb-2 ml-4">Welcome to your Calendar App</h1>
-                    <p class ="text-2xl ml-4 mb-1">{{ date }}</p>
-                    <p class ="text-xl ml-4 mb-2">This Week</p>
-                    <!-- Table not completed, after implementation of calendars can we add context to the table -->
-                    <table class="fixed relative mb-5 ml-2" style="max-width: 1000px;">
-                        <thead>
-                            <col width="150px" />
-                            <col width="150px" />
-                            <col width="150px" />
-                            <col width="150px" />
-                            <col width="150px" />
-                            <col width="150px" />
-                            <col width="150px" />
-                            <tr>
-                                <th class="border border-slate-300">Monday</th>
-                                <th class="border border-slate-300">Tuesday</th>
-                                <th class="border border-slate-300">Wednesday</th>
-                                <th class="border border-slate-300">Thursday</th>
-                                <th class="border border-slate-300">Friday</th>
-                                <th class="border border-slate-300">Saturday</th>
-                                <th class="border border-slate-300">Sunday</th>
-                            </tr>
-                        </thead>
-                        <!-- everything in one cell and same row
-                        <tbody>
-                            <tr>
-                                {% for day in week_days %}
-                                    <td>
-                                        {% for event in events_this_week %}
-                                            {% if event.start_date_time.date == day %}
-                                                <div class="text-center">{{ event.name }}</div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        </tbody>
-                        -->
-                        <!--everything is in its own rows but also own cells-->   
-                        <tbody>
-                            {% for event in events_this_week %}
+            <div class="flex justify-between items-start ">
+                <div class="w-3/4 mr-10">
+                    <h1 class="text-3xl font-bold mb-4">Welcome to your Calendar App</h1>
+                    <p class="text-xl mb-2">{{ date }}</p>
+                    <p class="text-lg mb-4">This Week</p>
+                    <div class="bg-white p-8 rounded-lg shadow-lg mb-6">
+                        <table class="w-full">
+                            <thead>
                                 <tr>
-                                    {% for day in week_days %}
-                                        {% if event.start_date_time.date == day %}
-                                            <td><div class="text-center mt-1 mb-1">{{ event.name }}</div></td>
-                                        {% else %}
-                                            <td></td>
-                                        {% endif %}
+                                    {% for day in week_day_events %}
+                                        <th class="border border-gray-300 text-center">{{ day|upper|slice:":3" }}</th>
                                     {% endfor %}
                                 </tr>
-                            {% endfor %}
-                        </tbody> 
-                    </table>
-                    <div class="bg-gray-200 p-4 rounded shadow-md ml-2 mb-5" style="max-width: 1000px; overflow-y: auto; overflow-x: auto;;">
-                        <h2 class="text-2xl font-semibold mb-2">Display Calendars</h2>
-
-                        {% if calendars %}
-                            {% for c in calendars %}
-                            <div class="flex items-center mb-2">
-                                <input type="checkbox" id="calendar{{ loop.index }}" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
-                                <label for="calendar{{ loop.index }}" class="text-gray-700">{{ c.name }}</label>
-                            </div>
-                            {% endfor %}
-                        {% endif %}
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    {% for day in week_day_events %}
+                                        <td class="border border-gray-300 px-4 py-2 w-20">
+                                            {% for event in week_day_events|get_value:day %}
+                                            <a href="{% url 'app:event' event.id %}">
+                                                {% small_event_card event %}
+                                            </a>
+                                            {% endfor %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-gray-200 p-4 rounded shadow-md mb-6 overflow-auto">
+                        <h2 class="text-xl font-semibold mb-2">My Calendars</h2>
+                        {% for calendar in calendars %}
+                            <a href="{% url 'app:calendar' calendar.id %}">
+                                {% calendar_card calendar %}
+                            </a>
+                        {% endfor %}
                     </div>
                 </div>
-                <div>
-                    <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
-                        <h2 class="text-2xl font-semibold mb-2">My Notifications</h2>
-                        <p>Reminders and invitation for events</p>
-                        <p>Click <a class="hover:text-indigo-700" href="{% url 'app:notifications' %}">here</a> to view all! </p>
+                <div class="w-1/4">
+                    <div class="bg-gray-200 p-4 rounded shadow-md mb-6">
+                        <h2 class="text-xl font-semibold mb-2">My Notifications</h2>
+                        <p><a class="text-blue-500 hover:underline" href="{% url 'app:notifications' %}">View all notifications</a></p>
                     </div>
-                    <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
-                        <h2 class="text-2xl font-semibold mb-2">My Events</h2>
-                        <p>Create and search for your events</p>
-                        <p>Click <a class="hover:text-indigo-700" href="{% url 'app:create_event' %}">here</a> to view all! </p>
+                    <div class="bg-gray-200 p-4 rounded shadow-md mb-6">
+                        <h2 class="text-xl font-semibold mb-2">My Events</h2>
+                        <p><a class="text-blue-500 hover:underline" href="{% url 'app:events' %}">View all events</a></p>
                         {% user_profile_event_list user.userprofile %}
                     </div>
                 </div>
             </div>
-            
-        {% else %}
-            <!-- Logged in, but has not created a calendar -->
-            <div class="text-center">
-                <a href="{% url 'app:calendars' %}">
-                    <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-5 px-10 border border-gray-400 rounded shadow text-2xl ml-4">
-                        Create A Calendar!
-                    </button>
-                </a>
-            </div>
-        {% endif %}
-    <!-- If not logged-in, we can add more if wanted -->
     {% else %}
         <div class="mx-auto">
             <p> You're not logged in, <a class="hover:text-indigo-700" href="{% url 'app:register' %}"> Register now!</a> </p>
         </div>
     {% endif %}
-        
 </div>
 {% endblock %}

@@ -19,64 +19,42 @@ APP_TEMPLATE_DIR = "app/"
 
 
 def index(request):
-    calendar_list = Calendar.objects.all()
-    event_list = Event.objects.all().order_by("start_date_time")
+    if not request.user.is_authenticated:
+        return render(request, f"{APP_TEMPLATE_DIR}index.html")
+
+    user_profile: UserProfile = request.user.userprofile
+    calendar_list = Calendar.objects.filter(user=user_profile)
+    event_list = user_profile.events.order_by("start_date_time")
 
     today_date = date.today()
     monday = today_date - timedelta(days=today_date.weekday())
-    tuesday = monday + timedelta(days=1)
-    wednesday = monday + timedelta(days=2)
-    thursday = monday + timedelta(days=3)
-    friday = monday + timedelta(days=4)
-    saturday = monday + timedelta(days=5)
-    sunday = monday + timedelta(days=6)
+    week_days = [monday + timedelta(days=i) for i in range(7)]
 
-    week_days = [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
     events_this_week = event_list.filter(
-        start_date_time__gte=monday, start_date_time__lte=sunday + timedelta(days=1)
+        start_date_time__gte=monday, start_date_time__lte=monday + timedelta(days=6)
     )
 
-    events_by_day = {}
-    for day in week_days:
-        events_by_day[day] = []
+    events_by_day = {day: [] for day in week_days}
 
     for event in events_this_week:
         event_day = event.start_date_time.date()
         events_by_day[event_day].append(event)
 
-    next_event = (
-        Event.objects.filter(start_date_time__gte=timezone.now())
-        .order_by("start_date_time")
-        .first()
-    )
-    if next_event:
-        time_difference = next_event.start_date_time - timezone.now()
-        hours_until_next_event = time_difference.seconds // 3600
-        minutes_until_next_event = (time_difference.seconds // 60) % 60
-    else:
-        hours_until_next_event = None
-        minutes_until_next_event = None
+    week_day_events = {
+        day.strftime("%A"): Event.objects.filter(start_date_time__date=day)
+        for day in week_days
+    }
 
-    flag = True
-    if request.user.is_authenticated:
-        calendar_exist = Calendar.objects.filter(user=request.user.userprofile).exists()
-        if calendar_exist:
-            flag = True
-
-    context_dict = {
+    context = {
         "date": today_date,
-        "flag": flag,
-        "user": request.user,
+        "week_day_events": week_day_events,
         "calendars": calendar_list,
         "events_by_day": events_by_day,
         "week_days": week_days,
         "events_this_week": events_this_week,
-        "next_event": next_event,
-        "hours_until_next_event": hours_until_next_event,
-        "minutes_until_next_event": minutes_until_next_event,
-        "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
     }
-    return render(request, f"{APP_TEMPLATE_DIR}index.html", context=context_dict)
+
+    return render(request, f"{APP_TEMPLATE_DIR}index.html", context=context)
 
 
 def register(request):
