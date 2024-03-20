@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from app.forms import UserRegistrationForm, LoginForm, UserProfileForm, EventForm
-from django.contrib.auth.models import User
 from app.models import UserProfile, Calendar, Event
 from .models import Event
 from datetime import date, timedelta

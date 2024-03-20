@@ -1,5 +1,7 @@
 from typing import List
 from django import template
+from app.models import Event, UserProfile
+from django.conf import settings
 
 register = template.Library()
 
@@ -47,3 +49,25 @@ def custom_button(text: str, button_type: str = "submit", extra_class: str = "")
 @register.inclusion_tag("app/components/error_messages.html")
 def error_messages(messages: List[str]):
     return {"messages": messages}
+
+
+@register.inclusion_tag("app/components/event_list.html")
+def user_profile_event_list(
+    user_profile: UserProfile, card_type: str = "small_event_card"
+):
+    return event_list(user_profile.events.all(), card_type)
+
+
+@register.inclusion_tag("app/components/event_list.html")
+def event_list(events: List[Event], card_type: str = "small_event_card"):
+    return {"events": events, "card_type": card_type}
+
+
+@register.inclusion_tag("app/components/small_event_card.html")
+def small_event_card(event: Event):
+    return {"event": event, "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY}
+
+
+@register.inclusion_tag("app/components/large_event_card.html")
+def large_event_card(event: Event):
+    return {"event": event}

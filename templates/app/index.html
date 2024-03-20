@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+{% load template_tags %}
 
 {% block title %}
     Index Page
@@ -88,15 +89,12 @@
                         <h2 class="text-2xl font-semibold mb-2">My Events</h2>
                         <p>Create and search for your events</p>
                         <p>Click <a class="hover:text-indigo-700" href="{% url 'app:create_event' %}">here</a> to view all! </p>
+                        {% user_profile_event_list user.userprofile "small_event_card" %}
                     </div>
                     <div class="bg-gray-200 p-4 rounded shadow-md max-w-lg mb-6">
                         <h2 class="text-2xl font-semibold mb-2">Next Event</h2>
                         <p>Your next event is in {{ hours_until_next_event }} hours and {{ minutes_until_next_event }} minutes</p>
-                        <div class="bg-gray-300 p-4 rounded shadow-md max-w-md mb-2">
-                            <p>Title: {{next_event.description}}</p>
-                            <p id="event-location">Location: Loading...</p>
-                            <p>Time, Date: {{next_event.start_date_time.time}}, {{next_event.start_date_time.date}}</p>
-                        </div>
+                        {% small_event_card next_event%}
                         <script>
                             window.onload = function() {
                                 updateLocation({{ next_event.location_latitude }}, {{ next_event.location_longitude }}, 'event-location');

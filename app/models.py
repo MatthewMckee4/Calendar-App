@@ -22,7 +22,7 @@ class UserProfile(models.Model):
 
 class Event(models.Model):
     owner = models.ForeignKey(
-        UserProfile, on_delete=models.CASCADE, related_name="owned_events"
+        UserProfile, on_delete=models.CASCADE, related_name="events"
     )
     name = models.CharField(max_length=64)
     attendees = models.ManyToManyField(UserProfile, related_name="attended_events")
