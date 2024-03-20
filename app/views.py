@@ -173,30 +173,9 @@ def logout_user(request):
 
 @login_required
 def calendars(request):
-    events = Event.objects.all()
-    events = get_events_json(events)
-    if request.method == "POST":
-        form = EventForm(request.POST)
-        if form.is_valid():
-            event = form.save(commit=False)
-            event.owner = request.user.userprofile
-            event.save()
-            return redirect("app:index")
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-    else:
-        form = EventForm()
-
+    calendars = Calendar.objects.filter(user=request.user.userprofile)
     return render(
-        request,
-        f"{APP_TEMPLATE_DIR}calendars.html",
-        {
-            "form": form,
-            "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
-            "events": events,
-        },
+        request, f"{APP_TEMPLATE_DIR}calendars.html", {"calendars": calendars}
     )
 
 
@@ -268,13 +247,8 @@ def delete_account(request):
 
 @login_required
 def events(request):
-    user_profile = request.user.userprofile
-    event_list = Event.objects.filter(owner=user_profile).order_by("start_date_time")
-    return render(
-        request,
-        f"{APP_TEMPLATE_DIR}events.html",
-        {"events": event_list},
-    )
+    event_list = Event.objects.filter(owner=request.user.userprofile)
+    return render(request, f"{APP_TEMPLATE_DIR}events.html", {"events": event_list})
 
 
 @login_required
@@ -302,8 +276,21 @@ def create_calendar(request):
 def calendar(request, calendar_id):
     calendar = get_object_or_404(Calendar, id=calendar_id)
     events = get_events_json(calendar.events.all())
+    if request.method == "POST":
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.owner = request.user.userprofile
+            event.save()
+            return redirect("app:index")
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = EventForm()
     return render(
         request,
         f"{APP_TEMPLATE_DIR}calendar.html",
-        {"calendar": calendar, "events": events},
+        {"calendar": calendar, "events": events, "form": form},
     )
