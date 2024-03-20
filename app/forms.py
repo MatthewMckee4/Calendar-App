@@ -116,12 +116,17 @@ class EventForm(forms.ModelForm):
             del self.fields["owner"]
             self.instance.owner = self.user
 
+    name = forms.CharField(max_length=64)
     attendees = forms.ModelMultipleChoiceField(queryset=UserProfile.objects.all())
 
     location_latitude = forms.FloatField()
     location_longitude = forms.FloatField()
-    start_date_time = forms.DateTimeField()
-    end_date_time = forms.DateTimeField()
+    start_date_time = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={"type": "datetime-local"})
+    )
+    end_date_time = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={"type": "datetime-local"})
+    )
     description = forms.CharField(max_length=512, required=False)
 
     class Meta:

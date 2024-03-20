@@ -3,7 +3,7 @@
 {% load template_tags %}
 
 {% block title %}
-    Events
+    Create an Event
 {% endblock %}
 
 {% block content %}
@@ -18,8 +18,8 @@
         <div id="map" style="height: 400px;" class="mb-4"></div>
         {% custom_input "Latitude" "location_latitude" "text" "55.873" hidden="True" %}
         {% custom_input "Longitude" "location_longitude" "text" "-4.289" hidden="True" %}
-        {% custom_input "Start Time" "start_date_time" "datetime-local" %}
-        {% custom_input "End Time" "end_date_time" "datetime-local" %}
+        {{ form.start_date_time }}
+        {{ form.end_date_time }}
         <div class="mb-4">
             <label for="attendees" class="block text-gray-700 text-m font-bold mb-2">Attendees</label>
             {{ form.attendees }}
