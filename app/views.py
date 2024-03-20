@@ -231,6 +231,7 @@ def notifications(request):
         "events": event_list,
         "event_details": event_details,
         "search_query": search_query,
+        "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
     }
     return render(request, f"{APP_TEMPLATE_DIR}notifications.html", context_dict)
 

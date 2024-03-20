@@ -1,10 +1,13 @@
 {% extends 'app/base.html' %}
+{% load static %}
 
 {% block title %}
     Notifications
 {% endblock %}
 
 {% block content %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
+<script src="{% static 'js/reverseGeocode.js' %}"></script>
 <div class="container mx-auto mt-5">
     <div class="flex">
         <div class="bg-gray-300 p-4 rounded shadow-md ml-10" style="min-width: 600px; max-height: 600px; overflow-y: auto; overflow-x: auto;">
@@ -22,7 +25,12 @@
                         <div class="container mx-auto mt-1">
                             <h2 class="text-xl font-semibold mb-2">Event Reminder</h2>
                             <p>Name of Event (Click to view more): <a href="{% url 'app:notifications' %}?event_id={{ e.id }}">{{ e.name }}</a></p>
-                            <p>Location: {{ e.location_latitude }}, {{ e.location_longitude }} </p>
+                            <p id="event-location">Location: {{ e.location_latitude }}, {{ e.location_longitude }} </p>
+                            <script>
+                                window.onload = function() {
+                                    updateLocation({{ e.location_latitude }}, {{ e.location_longitude }}, 'event-location');
+                                };
+                            </script>
                         </div>
                         <div class="container mx-auto mt-1">
                             <p> Start Time: {{ e.start_date_time.time }} </p>
