@@ -42,7 +42,7 @@
                                     <td>
                                         {% for event in events_this_week %}
                                             {% if event.start_date_time.date == day %}
-                                                <div class="text-center">{{ event.description }}</div>
+                                                <div class="text-center">{{ event.name }}</div>
                                             {% endif %}
                                         {% endfor %}
                                     </td>
@@ -56,7 +56,7 @@
                                 <tr>
                                     {% for day in week_days %}
                                         {% if event.start_date_time.date == day %}
-                                            <td><div class="text-center mt-1 mb-1">{{ event.description }}</div></td>
+                                            <td><div class="text-center mt-1 mb-1">{{ event.name }}</div></td>
                                         {% else %}
                                             <td></td>
                                         {% endif %}
@@ -71,8 +71,8 @@
                         {% if calendars %}
                             {% for c in calendars %}
                             <div class="flex items-center mb-2">
-                                <input type="checkbox" id="calendar1" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
-                                <label for="calendar1" class="text-gray-700">{{ c.name }}</label>
+                                <input type="checkbox" id="calendar{{ loop.index }}" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
+                                <label for="calendar{{ loop.index }}" class="text-gray-700">{{ c.name }}</label>
                             </div>
                             {% endfor %}
                         {% endif %}
@@ -93,7 +93,7 @@
                         <h2 class="text-2xl font-semibold mb-2">Next Event</h2>
                         <p>Your next event is in {{ hours_until_next_event }} hours and {{ minutes_until_next_event }} minutes</p>
                         <div class="bg-gray-300 p-4 rounded shadow-md max-w-md mb-2">
-                            <p>Title: {{next_event.description}}</p>
+                            <p>Title: {{next_event.name}}</p>
                             <p id="event-location">Location: Loading...</p>
                             <p>Time, Date: {{next_event.start_date_time.time}}, {{next_event.start_date_time.date}}</p>
                         </div>
