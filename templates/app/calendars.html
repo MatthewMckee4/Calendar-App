@@ -4,14 +4,22 @@
 Calendars
 {% endblock %}
 {% block content %}
-<div class="max-w-4xl mx-auto p-8  my-5">
-    <h2 class="text-2xl font-bold mb-4">Create an Event</h2>
+<div class="max-w-4xl mx-auto p-8 my-5">
+    <h2 class="text-2xl font-bold mb-4">My Calendars</h2>
     <div>
         {% for calendar in calendars %}
-        <div>
-            <a href="{% url 'app:calendar' calendar.id %}">{{ calendar.name }}</a>
-        </div>
+        <a href="{% url 'app:calendar' calendar.id %}">
+            <div class="w-full mb-4 bg-gray-100 p-2 rounded-lg">
+                    <h3 class="text-xl font-bold">
+                        {{ calendar.name }}
+                        <div class="inline-block w-5 h-5  rounded-full {{ calendar.colour }}" ></div>
+                    </h3>
+                    <p class="">
+                        {{ calendar.description }}
+                    </p>
+            </div>
+        </a>
         {% endfor %}
     </div>
-<div>
-{% endblock%}
+</div>
+{% endblock %}
