@@ -213,7 +213,7 @@ def notifications(request):
     if search_query:
         event_list = (
             Event.objects.filter(end_date_time__gte=current_datetime)
-            .filter(description__icontains=search_query)
+            .filter(name=search_query)
             .order_by("start_date_time")
         )
     else:
