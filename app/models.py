@@ -2,7 +2,6 @@ from __future__ import annotations
 import os
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
 
 
 def user_filename(instance: UserProfile, filename: str):
@@ -23,10 +22,10 @@ class UserProfile(models.Model):
 
 class Event(models.Model):
     owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="owned_events"
+        UserProfile, on_delete=models.CASCADE, related_name="owned_events"
     )
     name = models.CharField(max_length=64)
-    attendees = models.ManyToManyField(User, related_name="attended_events")
+    attendees = models.ManyToManyField(UserProfile, related_name="attended_events")
     description = models.CharField(max_length=512, blank=True)
     start_date_time = models.DateTimeField()
     end_date_time = models.DateTimeField()
@@ -37,7 +36,7 @@ class Event(models.Model):
 
 
 class Calendar(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     events = models.ManyToManyField(Event, related_name="calendars")
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=512)
@@ -45,7 +44,7 @@ class Calendar(models.Model):
 
 
 class Reminder(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     reminder_date_time = models.DateTimeField()
     message = models.CharField(max_length=256)
@@ -60,10 +59,10 @@ class Tag(models.Model):
 
 class Invitation(models.Model):
     sender = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="sent_invitations"
+        UserProfile, on_delete=models.CASCADE, related_name="sent_invitations"
     )
     receiver = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="received_invitations"
+        UserProfile, on_delete=models.CASCADE, related_name="received_invitations"
     )
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     status = models.CharField(max_length=32)

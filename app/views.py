@@ -58,7 +58,7 @@ def index(request):
 
     flag = True
     if request.user.is_authenticated:
-        calendar_exist = Calendar.objects.filter(user=request.user).exists()
+        calendar_exist = Calendar.objects.filter(user=request.user.userprofile).exists()
         if calendar_exist:
             flag = True
 
@@ -176,18 +176,19 @@ def calendars(request):
 
 @login_required
 def create_event(request):
-    user = request.user
     if request.method == "POST":
-        form = EventForm(request.POST, user=user)
+        form = EventForm(request.POST)
         if form.is_valid():
-            form.save()
+            event = form.save(commit=False)
+            event.owner = request.user.userprofile
+            event.save()
             return redirect("app:index")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
     else:
-        form = EventForm(user=user)
+        form = EventForm()
 
     return render(
         request,

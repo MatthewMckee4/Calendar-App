@@ -109,26 +109,14 @@ class LoginForm(forms.Form):
 
 
 class EventForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop("user", None)
-        super(EventForm, self).__init__(*args, **kwargs)
-        if self.user:
-            del self.fields["owner"]
-            self.instance.owner = self.user
-
     name = forms.CharField(max_length=64)
     attendees = forms.ModelMultipleChoiceField(queryset=UserProfile.objects.all())
-
     location_latitude = forms.FloatField()
     location_longitude = forms.FloatField()
-    start_date_time = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={"type": "datetime-local"})
-    )
-    end_date_time = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={"type": "datetime-local"})
-    )
+    start_date_time = forms.DateTimeField(input_formats=["%Y-%m-%dT%H:%M"])
+    end_date_time = forms.DateTimeField(input_formats=["%Y-%m-%dT%H:%M"])
     description = forms.CharField(max_length=512, required=False)
 
     class Meta:
         model = Event
-        fields = "__all__"
+        exclude = ["owner"]
