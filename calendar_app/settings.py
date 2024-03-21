@@ -33,7 +33,7 @@ GOOGLE_MAPS_API_KEY = "AIzaSyAshwqmiRx87_xxtZNhpPKjFY2JxBb70o4"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["matthewmckee.pythonanywhere.com/"]
+ALLOWED_HOSTS = ["matthewmckee.pythonanywhere.com"]
 
 
 # Application definition
