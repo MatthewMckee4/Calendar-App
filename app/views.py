@@ -40,7 +40,7 @@ def index(request):
         events_by_day[event_day].append(event)
 
     week_day_events = {
-        day.strftime("%A"): Event.objects.filter(start_date_time__date=day)
+        day.strftime("%A"): user_profile.events.filter(start_date_time__date=day)
         for day in week_days
     }
 
