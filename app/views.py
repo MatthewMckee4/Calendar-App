@@ -245,7 +245,12 @@ def event(request, event_id):
         )
         if form.is_valid():
             form.save()
-            return redirect("app:index")
+            return redirect("app:event", event_id=event_id)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    print(f"{field}: {error}")
+                    messages.error(request, f"{field}: {error}")
     else:
         form = AddToCalendarForm(user=request.user.userprofile, event=event)
     return render(
@@ -264,6 +269,13 @@ def event(request, event_id):
 def event_delete(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     event.delete()
+    return redirect("app:index")
+
+
+@login_required
+def calendar_delete(request, calendar_id):
+    calendar = get_object_or_404(Calendar, id=calendar_id)
+    calendar.delete()
     return redirect("app:index")
 
 

@@ -132,16 +132,14 @@ class CalendarForm(forms.ModelForm):
 
 class AddToCalendarForm(forms.ModelForm):
     calendars = forms.ModelMultipleChoiceField(
-        queryset=None, widget=forms.CheckboxSelectMultiple
+        queryset=None, widget=forms.CheckboxSelectMultiple, required=False
     )
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")
         event = kwargs.pop("event")
         super().__init__(*args, **kwargs)
-        self.fields["calendars"].queryset = Calendar.objects.filter(user=user).exclude(
-            events=event
-        )
+        self.fields["calendars"].queryset = Calendar.objects.filter(user=user)
         self.event = event
 
     class Meta:
@@ -150,6 +148,13 @@ class AddToCalendarForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        for calendar in self.cleaned_data["calendars"]:
-            calendar.events.add(self.event)
+
+        previously_selected_calendars = self.event.calendars.all()
+        selected_calendars = self.cleaned_data["calendars"]
+        for calendar in previously_selected_calendars:
+            self.event.calendars.remove(calendar)
+
+        for calendar in selected_calendars:
+            self.event.calendars.add(calendar)
+
         return instance

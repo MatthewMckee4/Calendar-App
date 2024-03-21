@@ -122,6 +122,9 @@ My calendar
                 >
                     <h2 class="mb-3 text-2xl">{{calendar.name}}</h2>
                     <button @click="showCreateEventModal()" class="text-white font-bold py-2 px-4 rounded bg-blue-500 hover:bg-blue-700" >Create Event</button>
+                    <a href="{% url 'app:calendar_delete' calendar.id %}">
+                        {% custom_button "Delete Calendar" "button" "bg-red-500 hover:bg-red-700" %}
+                    </a>
                     <div class="flex items-center justify-between py-2 px-6">
                         <div>
                             <span
@@ -213,7 +216,7 @@ My calendar
                                     >
                                         <div
                                             @click="showEventCard(getEvents(date))"
-                                            class="absolute top-0 right-0 mt-2 mr-2 inline-flex items-center justify-center rounded-full text-sm w-7 h-7 bg-gray-700 text-white leading-none cursor-pointer"
+                                            class="absolute top-0 right-0 mt-2 mr-2 inline-flex items-center justify-center rounded-full text-sm w-7 h-7 text-white leading-none cursor-pointer {{calendar.colour}}"
                                             x-show="events.filter(e => new Date(e.start_date_time).toDateString() === new Date(year, month, date).toDateString()).length"
                                             x-text="events.filter(e => new Date(e.start_date_time).toDateString() === new Date(year, month, date).toDateString()).length"
                                         ></div>

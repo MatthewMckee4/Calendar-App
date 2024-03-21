@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load template_tags %} 
+{% load static %}
 {% block title %}
 Calendars
 {% endblock %}
@@ -8,9 +9,9 @@ Calendars
     <h2 class="text-2xl font-bold mb-4">My Calendars</h2>
     <div>
         {% for calendar in calendars %}
-        <a href="{% url 'app:calendar' calendar.id %}">
-            {% calendar_card calendar %}
-        </a>
+            <a href="{% url 'app:calendar' calendar.id %}">
+                {% calendar_card calendar %}
+            </a>
         {% endfor %}
     </div>
 </div>

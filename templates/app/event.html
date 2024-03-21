@@ -13,18 +13,20 @@ Event {{ event.name }}
     <form method="post">
         {% csrf_token %}
         {% for calendar in form.calendars.field.queryset %}
-            <input type="checkbox" name="calendars" value="{{ calendar.id }}" {% if calendar.id in form.calendars.value %}checked{% endif %}>
-            <label>{{ calendar.name }}</label><br>
+            <div class="flex items-center mb-2"> 
+                <input type="checkbox" id="calendar-{{ calendar.id }}" name="calendars" value="{{ calendar.id }}" {% if event in calendar.events.all  %}checked{% endif %} class="mr-2" style="transform: scale(1.5); margin-right: 10px;">
+                <label for="calendar-{{ calendar.id }}" class=" {{ calendar.colour }} px-4 py-2 rounded-xl">{{ calendar.name }}</label>
+            </div>
         {% endfor %}
-        <button type="submit">Save</button>
+        {% custom_button "Add to Calendars" "submit" "bg-blue-500 hover:bg-blue-700 mb-3" %}
     </form>
 </div>
 {% endif%}
 
-<form method="post" action="{% url 'app:event_delete' event.id %}">
-    {% csrf_token %}
-    <button type="submit">Delete Event</button>
-</form>
+<a href="{% url 'app:event_delete' event.id %}">
+    {% custom_button "Delete Event" "button" "bg-red-500 hover:bg-red-700" %}
+</a>
+
 </div>
 
 {% endblock%}
