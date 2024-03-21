@@ -2,7 +2,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
 <script src="{% static 'js/reverseGeocode.js' %}"></script>
 <div class="bg-gray-300 p-4 rounded shadow-md max-w-md mb-2">
-    <p>Title: {{event.description}}</p>
+    <p>Title: {{event.name}}</p>
     <p id="event-location">Location: Loading...</p>
     <p>When: {{event.start_date_time.time}}, {{event.start_date_time.date}}</p>
 </div>

@@ -1,4 +1,5 @@
 {% load template_tags %} 
+{% load static %} 
 <form class="w-full" method="post">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {% csrf_token %}
@@ -7,14 +8,17 @@
             {% custom_textarea "Description" "description" required="True" %}
             
             {% custom_input "Attendees" "searchInput" "text" placeholder="Search" %}
-            <ul id="attendeeList" class="border rounded-md overflow-y-auto max-h-48">
-                <!-- List of attendees will be displayed here -->
-                {% for attendee in form.attendees %}
-                    <li class="">
-                        {{attendee}}
-                    </li>
+            <div id="attendeeList" class="border rounded-md overflow-y-auto max-h-48">
+                {% for attendee in form.attendees.field.queryset %}
+                    {% if attendee != user.userprofile %}
+                        <label class="flex items-center space-x-2 px-4 py-2">
+                            <input type="checkbox" name="attendees" value="{{ attendee.id }}" id="id_attendee_{{ attendee.id }}" class="rounded-full w-6 h-6">
+                            <img src="{{ attendee.profile_picture.url }}" class="rounded-full w-6 h-6" alt="{{ attendee.user.username }} Profile Picture">
+                            <span>{{ attendee.user.username }}</span>
+                        </label>
+                    {% endif %}
                 {% endfor %}
-            </ul>
+            </div>
             {% custom_input "StartTime" "start_date_time" "datetime-local" %}
             {% custom_input "End Time" "end_date_time" "datetime-local" %}
         </div>
@@ -36,7 +40,7 @@
 
 </form>
 <script>
-    // Get the input field and the combined list of attendees select element
+    // Get the input field and the combined list of attendees
     var input = document.getElementById('searchInput');
     var attendeeList = document.getElementById('attendeeList');
 
@@ -46,16 +50,15 @@
     // Function to filter attendees based on search input
     function filterAttendees() {
         var filter = input.value.toUpperCase();
-        var attendees = attendeeList.getElementsByTagName('li');
+        var labels = attendeeList.getElementsByTagName('label');
 
-        for (var i = 0; i < attendees.length; i++) {
-            var attendee = attendees[i];
-            var label = attendee.getElementsByTagName('label')[0];
+        for (var i = 0; i < labels.length; i++) {
+            var label = labels[i];
             var txtValue = label.textContent || label.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                attendee.style.display = "";
+                label.style.display = "";
             } else {
-                attendee.style.display = "none";
+                label.style.display = "none";
             }
         }
     }

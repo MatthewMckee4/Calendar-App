@@ -53,7 +53,8 @@ def error_messages(messages: List[str]):
 
 @register.inclusion_tag("app/components/event_list.html")
 def user_profile_event_list(user_profile: UserProfile):
-    return event_list(user_profile.events.all())
+    unique_events = set(user_profile.events.all() | user_profile.attended_events.all())
+    return event_list(unique_events)
 
 
 @register.inclusion_tag("app/components/event_list.html")
@@ -72,8 +73,12 @@ def small_event_card(event: Event):
 
 
 @register.inclusion_tag("app/components/create_event_form.html")
-def create_event_form(form):
-    return {"form": form, "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY}
+def create_event_form(form, user):
+    return {
+        "form": form,
+        "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
+        "user": user,
+    }
 
 
 @register.inclusion_tag("app/components/calendar_card.html")

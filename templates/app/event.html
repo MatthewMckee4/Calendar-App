@@ -16,7 +16,6 @@ Event {{ event.name }}
     ></div>
     {% for attendee in attendees %}
     <div class="flex items-center mb-2">
-        {{attendee.profile_picture.url}}
         {% if attendee.profile_picture.url%}
         <img
             src="{{attendee.profile_picture.url}}"
