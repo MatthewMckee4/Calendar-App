@@ -188,27 +188,32 @@ def create_event(request):
 def notifications(request):
     # it will now delete all events when the event has ended
     current_datetime = timezone.now()
-    event_list = Event.objects.filter(end_date_time__gte=current_datetime).order_by(
-        "start_date_time"
+    event_list = (
+        (
+            request.user.userprofile.events.all()
+            | request.user.userprofile.attended_events.all()
+        )
+        .distinct()
+        .order_by("start_date_time")
     )
     event_details = None
+    attendees = []
     event_id = request.GET.get("event_id")
     search_query = request.GET.get("search-bar", "")
     if search_query:
-        event_list = (
-            Event.objects.filter(end_date_time__gte=current_datetime)
-            .filter(name=search_query)
-            .order_by("start_date_time")
-        )
+        event_list = event_list.filter(name=search_query).order_by("start_date_time")
     else:
-        event_list = Event.objects.filter(end_date_time__gte=current_datetime).order_by(
+        event_list = event_list.filter(end_date_time__gte=current_datetime).order_by(
             "start_date_time"
         )
     if event_id:
         event_details = get_object_or_404(Event, id=event_id)
+        attendees = event_details.attendees.all()
+    print(attendees)
     context_dict = {
         "events": event_list,
         "event_details": event_details,
+        "attendees": attendees,
         "search_query": search_query,
         "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
     }

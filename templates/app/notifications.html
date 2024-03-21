@@ -18,56 +18,51 @@
                 </div>
             </form>
             <!-- list the events -->
-            {% if events %}
-            {% for e in events %}
-                <div class="bg-gray-200 p-4 rounded shadow-md mt-6">
-                    <div class="flex">
-                        <div class="container mx-auto mt-1">
-                            <h2 class="text-xl font-semibold mb-2">Event Reminder</h2>
-                            <p>Name of Event (Click to view more): <a href="{% url 'app:notifications' %}?event_id={{ e.id }}">{{ e.name }}</a></p>
-                            <p id="event-location">Location: {{ e.location_latitude }}, {{ e.location_longitude }} </p>
-                            <script>
-                                window.onload = function() {
-                                    updateLocation({{ e.location_latitude }}, {{ e.location_longitude }}, 'event-location');
-                                };
-                            </script>
-                        </div>
-                        <div class="container mx-auto mt-1">
-                            <p> Start Time: {{ e.start_date_time.time }} </p>
-                            <p> Date: {{ e.start_date_time.date }} </p>
-                            <p> Duration: {{ e.end_date_time|timeuntil:e.start_date_time }} </p>
+            {% for event in events %}
+                <a href="{% url 'app:notifications' %}?event_id={{ event.id }}">
+                    <div class="bg-gray-200 p-4 rounded shadow-md mt-6">
+                        <div class="flex">
+                            <div class="container mx-auto mt-1">
+                                <h2 class="text-xl font-semibold">Event Reminder</h2>
+                                <p>Name: {{ event.name }}</p>
+                                <p id="event-location_{{event.id}}">Location: {{ event.location_latitude }}, {{ event.location_longitude }} </p>
+                                <script>
+                                    window.onload = function() {
+                                        updateLocation({{ event.location_latitude }}, {{ event.location_longitude }}, "event-location_{{ event.id }}");
+                                    };
+                                </script>
+                            </div>
+                            <div class="container mx-auto mt-1">
+                                <p> Start Time: {{ event.start_date_time.time }} </p>
+                                <p> Date: {{ event.start_date_time.date }} </p>
+                                <p> Duration: {{ event.end_date_time|timeuntil:event.start_date_time }} </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             {% endfor %}
-            {% endif %}
         </div>
         <div class="ml-10 bg-gray-200 p-6 rounded shadow-md" style="min-width: 750px; max-width: 750px; max-height: 600px; overflow-y: auto; overflow-x: auto;">
             <div class="flex">
                 <div>
                     <h2 class="text-3xl font-semibold mb-4">Event Reminder</h2>
                     <!--If an event was clicked on-->
-                    <p class="mb-4 ml-4 text-xl">This is a reminder for {{event_details.name}}</p>
-                    <p class="mb-4 ml-4 text-xl">Located at: {{ event_details.location_latitude }}, {{ event_details.location_longitude }} </p>
-                    <p class="mb-4 ml-4 text-xl">Start Date: {{event_details.start_date_time.date }} </p>
-                    <p class="mb-4 ml-4 text-xl">End Date: {{event_details.end_date_time.date }} </p>
-                    <p class="mb-4 ml-4 text-xl">Start Time: {{event_details.start_date_time.time }} </p>
-                    <p class="mb-4 ml-4 text-xl">End Time: {{event_details.end_date_time.time }} </p>
-                    <p class="mb-4 ml-4 text-xl">Details:</p>
-                    <div class=" mb-4 ml-4 bg-gray-300 p-2 rounded shadow-md" style="max-width: 400px;">
-                        <p>{{event_details.description}}</p>
-                    </div>
-                </div>
-                <div class="ml-12 mt-12">
-                    <p class=" ml-4 text-xl">Attendees</p>
-                    {% if event_details.attendees.all %}
-                        {% for attendee in event_details.attendees.all %}
-                            <div class="flex items-center mb-2 ml-4 text-xl">
-                                <input type="checkbox" id="attendee{{ loop.index }}" class="form-checkbox h-5 w-5 text-blue-500 mr-2">
-                                <label for="attendee{{ loop.index }}" class="text-gray-700">{{ attendee }}</label>
+                    <p class="mb-4 text-xl">This is a reminder for {{event_details.name}}</p>
+                    <p class="mb-4 text-xl">Located at: {{ event_details.location_latitude }}, {{ event_details.location_longitude }} </p>
+                    <p class="mb-4 text-xl">Start Date: {{event_details.start_date_time.date }} </p>
+                    <p class="mb-4 text-xl">End Date: {{event_details.end_date_time.date }} </p>
+                    <p class="mb-4 text-xl">Start Time: {{event_details.start_date_time.time }} </p>
+                    <p class="mb-4 text-xl">End Time: {{event_details.end_date_time.time }} </p>
+                    <p class="mb-4 text-xl">Description: {{event_details.description}}</p>
+                    <div>
+                        <h2 class=" text-xl">Attendees</p>
+                        {% for attendee in attendees %}
+                            <div class="flex items-center mb-2 text-xl">
+                                <img src="{{ attendee.profile_picture.url }}" class="rounded-full w-6 h-6" alt="{{ attendee.user.username }} Profile Picture">
+                                <span class="ml-2">{{ attendee.user.username }}</span>
                             </div>
                         {% endfor %}
-                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
