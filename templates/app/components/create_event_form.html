@@ -13,7 +13,9 @@
                     {% if attendee != user.userprofile %}
                         <label class="flex items-center space-x-2 px-4 py-2">
                             <input type="checkbox" name="attendees" value="{{ attendee.id }}" id="id_attendee_{{ attendee.id }}" class="rounded-full w-6 h-6">
-                            <img src="{{ attendee.profile_picture.url }}" class="rounded-full w-6 h-6" alt="{{ attendee.user.username }} Profile Picture">
+                            {% if attendee.profile_picture %}
+                            <img src="{{ attendee.profile_picture.url }}" class="rounded-full w-7 h-7" alt="{{ attendee.user.username }} Profile Picture">
+                            {% endif %}
                             <span>{{ attendee.user.username }}</span>
                         </label>
                     {% endif %}
