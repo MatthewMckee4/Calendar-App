@@ -5,54 +5,61 @@
         <div>
             {% custom_input "Event Name" "name" "text" required="True" %} 
             {% custom_textarea "Description" "description" required="True" %}
-            <div class="mb-4">
-                <label
-                    for="attendees"
-                    class="block text-gray-700 text-m font-bold mb-2"
-                    >Attendees</label
-                >
-                {{ form.attendees }}
-            </div>
-            <div class="mb-4">
-                <label
-                    for="recurring"
-                    class="block text-gray-700 text-m font-bold mb-2"
-                    >Repeat this event</label
-                >
-                <input
-                    type="checkbox"
-                    id="recurring"
-                    name="recurring"
-                    value="recurring"
-                />
-            </div>
-            <div class="mb-4">
-                <label
-                    for="recurring_frequency"
-                    class="block text-gray-700 text-m font-bold mb-2"
-                    >Repeat frequency</label
-                >
-                {{ form.recurring_frequency }}
-            </div>
+            
+            {% custom_input "Attendees" "searchInput" "text" placeholder="Search" %}
+            <ul id="attendeeList" class="border rounded-md overflow-y-auto max-h-48">
+                <!-- List of attendees will be displayed here -->
+                {% for attendee in form.attendees %}
+                    <li class="">
+                        {{attendee}}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% custom_input "StartTime" "start_date_time" "datetime-local" %}
+            {% custom_input "End Time" "end_date_time" "datetime-local" %}
         </div>
         <div>
             {% custom_input "Search for a place" "pac-input" "text" input_class="controls" div_class="search-container"%}
             <div
                 id="map"
                 style="height: 400px"
-                class="mb-4"
+                class="mb-4 rounded-lg"
             ></div>
             {% custom_input "Latitude" "location_latitude" "text" "55.873" hidden="True" %} 
             {% custom_input "Longitude" "location_longitude" "text" "-4.289" hidden="True" %} 
-            {% custom_input "StartTime" "start_date_time" "datetime-local" %}
-            {% custom_input "End Time" "end_date_time" "datetime-local" %}
         </div>
     </div>
     {% error_messages messages %}
     <div class="flex justify-center">
         {% custom_button "Create Event" "submit" "bg-blue-500 hover:bg-blue-700" %}
     </div>
+
 </form>
+<script>
+    // Get the input field and the combined list of attendees select element
+    var input = document.getElementById('searchInput');
+    var attendeeList = document.getElementById('attendeeList');
+
+    // Event listener for search input
+    input.addEventListener('input', filterAttendees);
+
+    // Function to filter attendees based on search input
+    function filterAttendees() {
+        var filter = input.value.toUpperCase();
+        var attendees = attendeeList.getElementsByTagName('li');
+
+        for (var i = 0; i < attendees.length; i++) {
+            var attendee = attendees[i];
+            var label = attendee.getElementsByTagName('label')[0];
+            var txtValue = label.textContent || label.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                attendee.style.display = "";
+            } else {
+                attendee.style.display = "none";
+            }
+        }
+    }
+</script>
 <script>
     function initMap() {
         var uni = {

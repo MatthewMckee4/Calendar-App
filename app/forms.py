@@ -110,7 +110,9 @@ class LoginForm(forms.Form):
 
 class EventForm(forms.ModelForm):
     name = forms.CharField(max_length=64)
-    attendees = forms.ModelMultipleChoiceField(queryset=UserProfile.objects.all())
+    attendees = forms.ModelMultipleChoiceField(
+        queryset=UserProfile.objects.all(), widget=forms.CheckboxSelectMultiple
+    )
     location_latitude = forms.FloatField()
     location_longitude = forms.FloatField()
     start_date_time = forms.DateTimeField(input_formats=["%Y-%m-%dT%H:%M"])

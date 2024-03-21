@@ -13,7 +13,6 @@ from .models import Event
 from datetime import date, timedelta
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-import json
 
 APP_TEMPLATE_DIR = "app/"
 
@@ -163,12 +162,15 @@ def create_event(request):
         form = EventForm(request.POST)
         if form.is_valid():
             event = form.save(commit=False)
+            print(form)
             event.owner = request.user.userprofile
             event.save()
+            form.save_m2m()
             return redirect("app:index")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
+                    print(f"{field}: {error}")
                     messages.error(request, f"{field}: {error}")
     else:
         form = EventForm()
@@ -233,7 +235,24 @@ def events(request):
 @login_required
 def event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
-    return render(request, f"{APP_TEMPLATE_DIR}event.html", {"event": event})
+    attendees = event.attendees.all()
+    print(attendees)
+    return render(
+        request,
+        f"{APP_TEMPLATE_DIR}event.html",
+        {
+            "event": event,
+            "attendees": attendees,
+            "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
+        },
+    )
+
+
+@login_required
+def event_delete(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    event.delete()
+    return redirect("app:index")
 
 
 @login_required

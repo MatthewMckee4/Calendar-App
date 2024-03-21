@@ -4,6 +4,113 @@
 Event {{ event.name }}
 {% endblock %}
 {% block content %}
-{{event.name}}
-{{event.description}}
+<div class="max-w-4xl mx-auto p-8 rounded-lg shadow-lg my-5">
+    <h2 class="text-2xl font-bold mb-4">{{event.name}}</h2>
+    <p>Description: {{ event.description }}</p>
+    <p>Start Date Time: {{ event.start_date_time }}</p>
+    <p>End Date Time: {{ event.end_date_time }}</p>
+    <div
+        id="map"
+        style="height: 400px; width: 400px"
+        class="mb-4 rounded-lg"
+    ></div>
+    {% for attendee in attendees %}
+    <div class="flex items-center mb-2">
+        {{attendee.profile_picture.url}}
+        {% if attendee.profile_picture.url%}
+        <img
+            src="{{attendee.profile_picture.url}}"
+            alt="{{attendee.user.username}}"
+            class="w-10 h-10 rounded-full mr-2"
+            />
+            {% endif%}
+        <p>{{attendee.user.username}}</p>
+    </div>
+    {% endfor %}
+
+    <form method="post" action="{% url 'app:event_delete' event.id %}">
+        {% csrf_token %}
+        <button type="submit">Delete Event</button>
+    </form>
+</div>
+<script>
+    function initMap() {
+        var uni = {
+            lat: parseFloat(
+                {{ event.location_latitude}}
+            ),
+            lng: parseFloat(
+                {{ event.location_longitude}}
+            ),
+        };
+        var map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 13,
+            center: uni,
+            mapTypeId: "satellite",
+        });
+
+        var marker = new google.maps.Marker({
+            position: uni,
+            map: map,
+            draggable: true,
+        });
+
+        marker.addListener("dragend", function (event) {
+            document.getElementById("location_latitude").value =
+                event.latLng.lat().toString();
+            document.getElementById("location_longitude").value =
+                event.latLng.lng().toString();
+        });
+
+        var input = document.getElementById("pac-input");
+
+        var searchBox = new google.maps.places.SearchBox(input);
+
+        map.addListener("bounds_changed", function () {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        searchBox.addListener("places_changed", function () {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            marker.setMap(null);
+
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var location = place.geometry.location;
+                marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: place.name,
+                    draggable: true,
+                });
+                map.setCenter(location);
+                document.getElementById("location_latitude").value =
+                    location.lat().toString();
+                document.getElementById("location_longitude").value =
+                    location.lng().toString();
+
+                marker.addListener("dragend", function (event) {
+                    input.value = "";
+                    document.getElementById("location_latitude").value =
+                        event.latLng.lat().toString();
+                    document.getElementById("location_longitude").value =
+                        event.latLng.lng().toString();
+                });
+            });
+        });
+    }
+</script>
+<script
+    async
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initMap"
+></script>
 {% endblock%}

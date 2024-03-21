@@ -14,7 +14,7 @@ def user_filename(instance: UserProfile, filename: str):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     date_of_birth = models.DateField(null=True, blank=True)
-    profile_picture = models.ImageField(upload_to=user_filename, default="default.jpg")
+    profile_picture = models.ImageField(upload_to=user_filename)
 
     def __str__(self):
         return self.user.username
@@ -31,8 +31,6 @@ class Event(models.Model):
     end_date_time = models.DateTimeField()
     location_latitude = models.FloatField(null=True, blank=True)
     location_longitude = models.FloatField(null=True, blank=True)
-    recurring = models.BooleanField(default=False)
-    recurring_frequency = models.CharField(max_length=64, blank=True)
 
 
 class Calendar(models.Model):

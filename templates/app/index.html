@@ -27,8 +27,10 @@
                                     {% for day in week_day_events %}
                                         <td class="border border-gray-300 px-4 py-2 w-20">
                                             {% for event in week_day_events|get_value:day %}
-                                            <a href="{% url 'app:event' event.id %}">
-                                                {% small_event_card event %}
+                                            <a href="{% url 'app:event' event.id %}" >
+                                                <div class="mb-2">
+                                                    {% small_event_card event %}
+                                                </div>
                                             </a>
                                             {% endfor %}
                                         </td>
