@@ -11,6 +11,20 @@ from django.utils import timezone
 import random
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+names = [
+    ("Alice", "Smith"),
+    ("Bob", "Jones"),
+    ("Charlie", "Brown"),
+    ("David", "Williams"),
+    ("Eve", "Taylor"),
+    ("Frank", "Wilson"),
+    ("Grace", "Evans"),
+    ("Harry", "Thomas"),
+    ("Ivy", "Harris"),
+    ("Jack", "Martin"),
+]
 
 
 def create_users(num_users):
@@ -19,10 +33,19 @@ def create_users(num_users):
         email = f"user{i}@example.com"
         password = "password123"
         user = User.objects.create_user(
-            username=username, email=email, password=password
+            username=username,
+            email=email,
+            password=password,
+            first_name=names[i][0],
+            last_name=names[i][1],
         )
-        profile_picture = f"profile_pictures/user_{i}.jpg"
-        UserProfile.objects.create(
+
+        image_data = open(f"media/profile_pictures/user_{i}.jpg", "rb").read()
+        profile_picture = SimpleUploadedFile(
+            f"user_{i}.jpg", image_data, content_type="image/jpeg"
+        )
+
+        user_profile = UserProfile.objects.create(
             user=user, date_of_birth=datetime.now(), profile_picture=profile_picture
         )
 
