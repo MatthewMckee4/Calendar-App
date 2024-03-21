@@ -21,7 +21,10 @@ def create_users(num_users):
         user = User.objects.create_user(
             username=username, email=email, password=password
         )
-        UserProfile.objects.create(user=user, date_of_birth=datetime.now())
+        profile_picture = f"profile_pictures/user_{i}.jpg"
+        UserProfile.objects.create(
+            user=user, date_of_birth=datetime.now(), profile_picture=profile_picture
+        )
 
 
 def create_events(num_events):

@@ -162,7 +162,6 @@ def create_event(request):
         form = EventForm(request.POST)
         if form.is_valid():
             event = form.save(commit=False)
-            print(form)
             event.owner = request.user.userprofile
             event.save()
             form.save_m2m()
@@ -236,7 +235,6 @@ def events(request):
 def event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     attendees = event.attendees.all()
-    print(attendees)
     return render(
         request,
         f"{APP_TEMPLATE_DIR}event.html",
