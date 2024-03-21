@@ -67,6 +67,15 @@ def event_card(event: Event):
     return {"event": event, "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY}
 
 
+@register.inclusion_tag("app/components/event_page_card.html")
+def event_page_card(event: Event, attendees: List[UserProfile]):
+    return {
+        "event": event,
+        "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
+        "attendees": attendees,
+    }
+
+
 @register.inclusion_tag("app/components/small_event_card.html")
 def small_event_card(event: Event):
     return {"event": event}

@@ -1,4 +1,5 @@
 {% extends 'app/base.html' %}
+{% load template_tags %}
 {% load static %}
 
 {% block title %}
@@ -10,7 +11,7 @@
 <script src="{% static 'js/reverseGeocode.js' %}"></script>
 <div class="container mx-auto mt-5">
     <div class="flex">
-        <div class="bg-gray-300 p-4 rounded shadow-md ml-10" style="min-width: 600px; max-height: 600px; overflow-y: auto; overflow-x: auto;">
+        <div class="bg-gray-300 p-4 rounded shadow-md ml-10" style="min-width: 600px; overflow-y: auto; overflow-x: auto;">
             <form class="max-w-md mx-auto" method="GET" action="">
                 <div class="pt-2 relative mx-auto text-gray-600">
                     <input type="search" id="default-search" name="search-bar" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search Events By Name" value="{{ search_query }}" />
@@ -42,27 +43,13 @@
                 </a>
             {% endfor %}
         </div>
-        <div class="ml-10 bg-gray-200 p-6 rounded shadow-md" style="min-width: 750px; max-width: 750px; max-height: 600px; overflow-y: auto; overflow-x: auto;">
+        <div class="ml-10 bg-gray-200 p-6 rounded shadow-md" style="min-width: 750px; max-width: 750px;  overflow-y: auto; overflow-x: auto;">
             <div class="flex">
                 <div>
                     <h2 class="text-3xl font-semibold mb-4">Event Reminder</h2>
                     <!--If an event was clicked on-->
                     <p class="mb-4 text-xl">This is a reminder for {{event_details.name}}</p>
-                    <p class="mb-4 text-xl">Located at: {{ event_details.location_latitude }}, {{ event_details.location_longitude }} </p>
-                    <p class="mb-4 text-xl">Start Date: {{event_details.start_date_time.date }} </p>
-                    <p class="mb-4 text-xl">End Date: {{event_details.end_date_time.date }} </p>
-                    <p class="mb-4 text-xl">Start Time: {{event_details.start_date_time.time }} </p>
-                    <p class="mb-4 text-xl">End Time: {{event_details.end_date_time.time }} </p>
-                    <p class="mb-4 text-xl">Description: {{event_details.description}}</p>
-                    <div>
-                        <h2 class=" text-xl">Attendees</p>
-                        {% for attendee in attendees %}
-                            <div class="flex items-center mb-2 text-xl">
-                                <img src="{{ attendee.profile_picture.url }}" class="rounded-full w-6 h-6" alt="{{ attendee.user.username }} Profile Picture">
-                                <span class="ml-2">{{ attendee.user.username }}</span>
-                            </div>
-                        {% endfor %}
-                    </div>
+                    {% event_page_card event attendees %}
                 </div>
             </div>
         </div>

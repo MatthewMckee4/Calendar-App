@@ -196,7 +196,7 @@ def notifications(request):
         .distinct()
         .order_by("start_date_time")
     )
-    event_details = None
+    event = None
     attendees = []
     event_id = request.GET.get("event_id")
     search_query = request.GET.get("search-bar", "")
@@ -207,12 +207,11 @@ def notifications(request):
             "start_date_time"
         )
     if event_id:
-        event_details = get_object_or_404(Event, id=event_id)
-        attendees = event_details.attendees.all()
-    print(attendees)
+        event = get_object_or_404(Event, id=event_id)
+        attendees = event.attendees.all()
     context_dict = {
         "events": event_list,
-        "event_details": event_details,
+        "event": event,
         "attendees": attendees,
         "search_query": search_query,
         "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
