@@ -19,8 +19,6 @@ def get_events_json(events: List[Event]):
                 "location_latitude": event.location_latitude,
                 "location_longitude": event.location_longitude,
                 "description": event.description,
-                "recurring": event.recurring,
-                "recurring_frequency": event.recurring_frequency,
             }
             for event in events
         ]

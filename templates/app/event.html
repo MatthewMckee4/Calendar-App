@@ -7,6 +7,20 @@ Event {{ event.name }}
 <div class="max-w-4xl mx-auto p-8 rounded-lg shadow-lg my-5">
 
 {% event_page_card event attendees %}
+
+{% if form.calendars.field.queryset%}
+<div>
+    <form method="post">
+        {% csrf_token %}
+        {% for calendar in form.calendars.field.queryset %}
+            <input type="checkbox" name="calendars" value="{{ calendar.id }}" {% if calendar.id in form.calendars.value %}checked{% endif %}>
+            <label>{{ calendar.name }}</label><br>
+        {% endfor %}
+        <button type="submit">Save</button>
+    </form>
+</div>
+{% endif%}
+
 <form method="post" action="{% url 'app:event_delete' event.id %}">
     {% csrf_token %}
     <button type="submit">Delete Event</button>

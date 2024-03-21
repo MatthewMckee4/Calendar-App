@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
-from app.forms import CalendarForm, UserRegistrationForm
+from app.forms import AddToCalendarForm, CalendarForm, UserRegistrationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -239,11 +239,21 @@ def events(request):
 def event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     attendees = event.attendees.all()
+    if request.method == "POST":
+        form = AddToCalendarForm(
+            request.POST, user=request.user.userprofile, event=event
+        )
+        if form.is_valid():
+            form.save()
+            return redirect("app:index")
+    else:
+        form = AddToCalendarForm(user=request.user.userprofile, event=event)
     return render(
         request,
         f"{APP_TEMPLATE_DIR}event.html",
         {
             "event": event,
+            "form": form,
             "attendees": attendees,
             "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
         },
