@@ -9,9 +9,7 @@ Calendars
     <h2 class="text-2xl font-bold mb-4">My Calendars</h2>
     <div>
         {% for calendar in calendars %}
-            <a href="{% url 'app:calendar' calendar.id %}">
-                {% calendar_card calendar %}
-            </a>
+            {% calendar_card calendar %}
         {% endfor %}
     </div>
 </div>

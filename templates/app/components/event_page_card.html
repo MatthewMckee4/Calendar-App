@@ -3,7 +3,6 @@
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
 <script src="{% static 'js/reverseGeocode.js' %}"></script>
 <h2 class="text-2xl font-bold mb-4">{{event.name}}</h2>
-<p class="mb-4 text-xl">Located at: {{ event.location_latitude }}, {{ event.location_longitude }} </p>
 <p class="mb-4 text-xl">Start Date: {{event.start_date_time.date }} </p>
 <p class="mb-4 text-xl">End Date: {{event.end_date_time.date }} </p>
 <p class="mb-4 text-xl">Start Time: {{event.start_date_time.time }} </p>

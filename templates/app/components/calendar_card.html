@@ -1,15 +1,18 @@
 {% load template_tags %} 
-<div class="w-full mb-4 bg-gray-100 p-2 rounded-lg">
-    <div class="flex justify-between items-center">
-        <h3 class="text-xl font-bold">
-            {{ calendar.name }}
-            <div class="inline-block w-5 h-5 rounded-full {{ calendar.colour }}"></div>
-        </h3>
-        <a href="{% url 'app:calendar_delete' calendar.id %}" >
+{% load static %}
+<a href="{% url 'app:calendar' calendar.id %}">
+    <div class="w-full mb-4 bg-gray-100 p-2 rounded-lg">
+        <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold">
+                {{ calendar.name }}
+                <div class="inline-block w-5 h-5 rounded-full {{ calendar.colour }}"></div>
+            </h3>
+            <a href="{% url 'app:calendar_delete' calendar.id %}" >
             {% custom_button "Delete Calendar" "button" "bg-red-500 hover:bg-red-700" %}
-        </a>
+            </a>
+        </div>
+        <p >
+            {{ calendar.description }}
+        </p>
     </div>
-    <p class="">
-        {{ calendar.description }}
-    </p>
-</div>
+</a>

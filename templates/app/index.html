@@ -42,9 +42,7 @@
                     <div class="bg-gray-200 p-4 rounded shadow-md mb-6 overflow-auto">
                         <h2 class="text-xl font-semibold mb-2">My Calendars</h2>
                         {% for calendar in calendars %}
-                            <a href="{% url 'app:calendar' calendar.id %}">
-                                {% calendar_card calendar %}
-                            </a>
+                            {% calendar_card calendar %}
                         {% endfor %}
                     </div>
                 </div>
