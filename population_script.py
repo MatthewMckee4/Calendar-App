@@ -68,16 +68,33 @@ def create_events(num_events):
         event.save()
 
 
+colours = [
+    "bg-blue-500",
+    "bg-red-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-indigo-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-gray-500",
+]
+
+
 def create_calendars(num_calendars):
     users = UserProfile.objects.all()
     for i in range(num_calendars):
         user = random.choice(users)
-        Calendar.objects.create(
+        user_events = Event.objects.filter(owner=user)
+        selected_events = random.sample(list(user_events), k=2)
+
+        calendar = Calendar.objects.create(
             user=user,
             name=f"Calendar {i}",
             description=f"This is calendar {i}",
-            colour="blue",
+            colour=random.choice(colours),
         )
+
+        calendar.events.set(selected_events)
 
 
 def create_reminders(num_reminders):
@@ -124,8 +141,8 @@ def create_invitations(num_invitations):
 
 if __name__ == "__main__":
     create_users(10)
-    create_events(20)
-    create_calendars(5)
+    create_events(70)
+    create_calendars(15)
     create_reminders(15)
     create_tags(5)
     create_invitations(15)

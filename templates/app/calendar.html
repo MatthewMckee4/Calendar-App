@@ -24,7 +24,7 @@ My calendar
         "November",
         "December",
     ];
-    const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     function app() {
         return {
@@ -32,7 +32,7 @@ My calendar
             year: "",
             no_of_days: [],
             blankdays: [],
-            days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
             events: JSON.parse("{{ events | escapejs }}"),
             openEventModal: false,
             openEventCard: false,
