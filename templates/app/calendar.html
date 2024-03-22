@@ -96,11 +96,10 @@ My calendar
             },
             incrementMonth() {
                 this.month += 1;
-                if (this.month === 12) {  // If month becomes 12 (December), increment the year
+                if (this.month === 12) { 
                     this.year += 1;
                     this.month = 0;  
                 }
-                getNoOfDays(); 
             },
             decrementMonth() {
                 this.month -= 1;
